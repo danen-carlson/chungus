@@ -45,8 +45,6 @@ targets:
       path: Chungus.entitlements
       properties:
         com.apple.developer.healthkit: true
-        com.apple.developer.healthkit.access:
-          - workout-kit
     dependencies:
       - target: ChungusWatch
         embed: true
