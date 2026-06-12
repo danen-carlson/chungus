@@ -87,6 +87,67 @@ struct OnboardingView: View {
             } message: {
                 Text(viewModel.generationError ?? "Unknown error")
             }
+            .overlay {
+                if viewModel.isGenerating {
+                    GeneratingOverlay()
+                        .transition(.opacity)
+                }
+            }
+            .animation(.easeInOut, value: viewModel.isGenerating)
+        }
+    }
+}
+
+/// Full-screen overlay shown while generating the workout plan
+struct GeneratingOverlay: View {
+    @State private var dots = ""
+    @State private var dotTimer: Timer?
+
+    var body: some View {
+        ZStack {
+            Color.black.opacity(0.85)
+                .ignoresSafeArea()
+
+            VStack(spacing: 24) {
+                // Animated dumbbell
+                Image(systemName: "dumbbell.fill")
+                    .font(.system(size: 64))
+                    .foregroundStyle(.orange)
+                    .symbolEffect(.pulse, options: .repeating)
+
+                VStack(spacing: 8) {
+                    Text("Generating Your Workout Plan")
+                        .font(.title2.bold())
+                        .foregroundStyle(.white)
+
+                    Text("AI is building your personalized program\(dots)")
+                        .font(.subheadline)
+                        .foregroundStyle(.white.opacity(0.7))
+                        .animation(.none, value: dots)
+                }
+
+                ProgressView()
+                    .tint(.orange)
+                    .scaleEffect(1.5)
+                    .padding(.top, 8)
+
+                Text("This can take up to a minute")
+                    .font(.caption)
+                    .foregroundStyle(.white.opacity(0.5))
+            }
+            .padding(40)
+        }
+        .onAppear {
+            dotTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { _ in
+                if dots.count < 3 {
+                    dots += "."
+                } else {
+                    dots = ""
+                }
+            }
+        }
+        .onDisappear {
+            dotTimer?.invalidate()
         }
     }
 }
@@ -395,6 +456,15 @@ struct SetupStep4_APIKey: View {
                     Text("• Suggests exercise swaps when needed")
                     Text("• Adapts future workouts based on your performance")
                     Text("• Your key is stored securely in Keychain")
+                }
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .cardStyle()
+
+                VStack(alignment: .leading, spacing: 6) {
+                    Label("Heads up", systemImage: "clock.fill")
+                        .font(.headline)
+                    Text("After you tap Generate, the AI will take up to a minute to build your personalized workout plan. Grab a coffee! ☕")
                 }
                 .font(.subheadline)
                 .foregroundStyle(.secondary)

@@ -83,15 +83,23 @@ actor GeminiService {
         }
 
         let jsonData = try JSONSerialization.data(withJSONObject: requestBody)
+        let requestSizeKB = Double(jsonData.count) / 1024.0
 
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpBody = jsonData
+        request.timeoutInterval = useLongTimeout ? 120 : 30  // Explicit per-request timeout
+
+        let callStart = Date()
+        print("[Chungus] 🌐 Sending \(requestSizeKB < 1 ? String(format: "%.0f bytes", Double(jsonData.count)) : String(format: "%.1f KB", requestSizeKB)) to \(model) (timeout: \(request.timeoutInterval)s)")
 
         do {
             let activeSession = useLongTimeout ? longSession : session
             let (data, response) = try await activeSession.data(for: request)
+            let elapsed = Date().timeIntervalSince(callStart)
+            let responseSizeKB = Double(data.count) / 1024.0
+            print("[Chungus] ✅ Response received in \(String(format: "%.1f", elapsed))s (\(String(format: "%.1f", responseSizeKB)) KB)")
 
             guard let httpResponse = response as? HTTPURLResponse else {
                 throw GeminiError.invalidResponse
@@ -99,6 +107,7 @@ actor GeminiService {
 
             guard httpResponse.statusCode == 200 else {
                 let errorBody = String(data: data, encoding: .utf8) ?? "Unknown error"
+                print("[Chungus] ⚠️ HTTP \(httpResponse.statusCode) after \(String(format: "%.1f", elapsed))s: \(errorBody.prefix(200))")
                 throw GeminiError.httpError(httpResponse.statusCode, errorBody)
             }
 
@@ -141,8 +150,12 @@ actor GeminiService {
             }
 
         } catch let error as GeminiError {
+            let elapsed = Date().timeIntervalSince(callStart)
+            print("[Chungus] ❌ Gemini error after \(String(format: "%.1f", elapsed))s: \(error)")
             throw error
         } catch {
+            let elapsed = Date().timeIntervalSince(callStart)
+            print("[Chungus] ❌ Network error after \(String(format: "%.1f", elapsed))s: \(error.localizedDescription)")
             throw GeminiError.networkError(error)
         }
     }
