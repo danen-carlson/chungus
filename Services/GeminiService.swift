@@ -104,17 +104,31 @@ actor GeminiService {
             }
 
             // Parse the JSON text from Gemini into our model
-            guard let textData = textPart.data(using: .utf8) else {
+            // Strip markdown code fences if Gemini wraps the response
+            var cleanedText = textPart.trimmingCharacters(in: .whitespacesAndNewlines)
+            if cleanedText.hasPrefix("```") {
+                // Remove opening fence (```json or ```)
+                if let firstNewline = cleanedText.firstIndex(of: "\n") {
+                    cleanedText = String(cleanedText[cleanedText.index(after: firstNewline)...])
+                }
+                // Remove closing fence
+                if cleanedText.hasSuffix("```") {
+                    cleanedText = String(cleanedText.dropLast(3))
+                }
+                cleanedText = cleanedText.trimmingCharacters(in: .whitespacesAndNewlines)
+            }
+
+            guard let textData = cleanedText.data(using: .utf8) else {
                 throw GeminiError.decodingError("Could not encode response text")
             }
 
             let decoder = JSONDecoder()
-            decoder.keyDecodingStrategy = .convertFromSnakeCase
+            // Gemini returns camelCase keys matching our model properties
 
             do {
                 return try decoder.decode(T.self, from: textData)
             } catch {
-                throw GeminiError.decodingError("\(error.localizedDescription)\nRaw: \(textPart.prefix(500))")
+                throw GeminiError.decodingError("\(error.localizedDescription)\nRaw: \(cleanedText.prefix(500))")
             }
 
         } catch let error as GeminiError {

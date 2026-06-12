@@ -79,10 +79,13 @@ struct OnboardingView: View {
             }
             .navigationTitle("Welcome to Chungus")
             .navigationBarTitleDisplayMode(.inline)
-            .alert("Setup Error", isPresented: .constant(viewModel.generationError != nil)) {
+            .alert("Setup Error", isPresented: Binding(
+                get: { viewModel.generationError != nil },
+                set: { if !$0 { viewModel.generationError = nil } }
+            )) {
                 Button("OK") { viewModel.generationError = nil }
             } message: {
-                Text(viewModel.generationError ?? "")
+                Text(viewModel.generationError ?? "Unknown error")
             }
         }
     }

@@ -15,12 +15,42 @@ struct DashboardView: View {
 
                     // Upcoming workouts
                     if viewModel.upcomingWorkouts.isEmpty {
-                        ContentUnavailableView(
-                            "No Workouts Yet",
-                            systemImage: "dumbbell",
-                            description: Text("Your AI-generated workout plan will appear here.")
-                        )
-                        .padding(.top, 60)
+                        VStack(spacing: 16) {
+                            ContentUnavailableView(
+                                "No Workouts Yet",
+                                systemImage: "dumbbell",
+                                description: Text("Generate your AI workout plan to get started.")
+                            )
+
+                            if viewModel.isGenerating {
+                                HStack {
+                                    ProgressView()
+                                    Text("Generating your plan...")
+                                }
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
+                            } else {
+                                Button {
+                                    Task {
+                                        await viewModel.generatePlan(context: modelContext)
+                                    }
+                                } label: {
+                                    Label("Generate Workout Plan", systemImage: "sparkles")
+                                        .font(.headline)
+                                        .padding()
+                                }
+                                .buttonStyle(.borderedProminent)
+                                .tint(.orange)
+                            }
+
+                            if let error = viewModel.generationError {
+                                Text(error)
+                                    .font(.caption)
+                                    .foregroundStyle(.red)
+                                    .padding(.horizontal)
+                            }
+                        }
+                        .padding(.top, 40)
                     } else {
                         ForEach(viewModel.upcomingWorkouts) { workout in
                             WorkoutCard(
