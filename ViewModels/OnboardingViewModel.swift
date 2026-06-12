@@ -94,20 +94,23 @@ final class OnboardingViewModel {
         isGenerating = true
         generationError = nil
 
-        // Save API key
-        KeychainService.geminiAPIKey = geminiAPIKey.trimmingCharacters(in: .whitespaces)
+        // Save API key first
+        let trimmedKey = geminiAPIKey.trimmingCharacters(in: .whitespaces)
+        KeychainService.geminiAPIKey = trimmedKey
+        print("[Chungus] API key saved: \(trimmedKey.prefix(8))...")
 
-        // Build and save profile
+        // Build profile (don't insert yet — wait until plan is generated)
         let profile = buildProfile()
-        context.insert(profile)
+        let profileSummary = profile.promptSummary
+        print("[Chungus] Profile: \(profileSummary)")
 
         do {
-            try context.save()
-
-            // Generate initial plan
+            // Generate initial plan BEFORE saving anything to SwiftData
+            // This way if Gemini fails, user stays on onboarding and can retry
             let generator = WorkoutGenerator()
-            let profileSummary = profile.promptSummary
+            print("[Chungus] Calling Gemini to generate plan...")
             let generatedPlan = try await generator.generateInitialPlan(profileSummary: profileSummary)
+            print("[Chungus] Plan received: \(generatedPlan.splitType) with \(generatedPlan.workouts.count) workouts")
 
             // Convert to SwiftData models
             let plan = WorkoutPlan(splitType: generatedPlan.splitType)
@@ -119,6 +122,7 @@ final class OnboardingViewModel {
                     estimatedDurationMin: genWorkout.estimatedDurationMin,
                     order: index
                 )
+                print("[Chungus]   Workout \(index + 1): \(genWorkout.name) (\(genWorkout.exercises.count) exercises)")
 
                 for (exIndex, genEx) in genWorkout.exercises.enumerated() {
                     let exercise = ExerciseTemplate(
@@ -138,10 +142,15 @@ final class OnboardingViewModel {
                 plan.workouts.append(template)
             }
 
+            // NOW insert everything and save atomically
+            // This triggers the @Query in RootView to switch to Dashboard
+            context.insert(profile)
             context.insert(plan)
             try context.save()
+            print("[Chungus] Profile + Plan saved to SwiftData — setup complete!")
 
         } catch {
+            print("[Chungus] ❌ Setup failed: \(error)")
             generationError = error.localizedDescription
         }
 
