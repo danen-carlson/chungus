@@ -9,11 +9,18 @@ actor GeminiService {
     private let model = "gemini-2.5-flash"
     private let session: URLSession
 
+    private let longSession: URLSession
+
     private init() {
         let config = URLSessionConfiguration.default
         config.timeoutIntervalForRequest = 30
         config.timeoutIntervalForResource = 60
         self.session = URLSession(configuration: config)
+
+        let longConfig = URLSessionConfiguration.default
+        longConfig.timeoutIntervalForRequest = 120  // 2 min for large plan generation
+        longConfig.timeoutIntervalForResource = 180
+        self.longSession = URLSession(configuration: longConfig)
     }
 
     // MARK: - Errors
@@ -47,7 +54,8 @@ actor GeminiService {
     func generateJSON<T: Decodable>(
         prompt: String,
         responseType: T.Type,
-        schema: [String: Any]? = nil
+        schema: [String: Any]? = nil,
+        useLongTimeout: Bool = false
     ) async throws -> T {
         guard let apiKey = KeychainService.geminiAPIKey else {
             throw GeminiError.noAPIKey
@@ -82,7 +90,8 @@ actor GeminiService {
         request.httpBody = jsonData
 
         do {
-            let (data, response) = try await session.data(for: request)
+            let activeSession = useLongTimeout ? longSession : session
+            let (data, response) = try await activeSession.data(for: request)
 
             guard let httpResponse = response as? HTTPURLResponse else {
                 throw GeminiError.invalidResponse
