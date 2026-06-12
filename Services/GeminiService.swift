@@ -171,4 +171,41 @@ actor GeminiService {
 
         return textPart
     }
+
+    // MARK: - Connection Test
+
+    /// Test an API key with a minimal prompt. Returns true on success, throws on failure.
+    func testConnection(apiKey: String) async throws -> Bool {
+        let url = URL(string: "\(baseURL)/\(model):generateContent?key=\(apiKey)")!
+
+        let requestBody: [String: Any] = [
+            "contents": [
+                ["parts": [["text": "Reply with just the word OK"]]]
+            ],
+            "generationConfig": [
+                "maxOutputTokens": 10,
+                "temperature": 0
+            ]
+        ]
+
+        let jsonData = try JSONSerialization.data(withJSONObject: requestBody)
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpBody = jsonData
+
+        let (data, response) = try await session.data(for: request)
+
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw GeminiError.invalidResponse
+        }
+
+        guard httpResponse.statusCode == 200 else {
+            let errorBody = String(data: data, encoding: .utf8) ?? "Unknown error"
+            throw GeminiError.httpError(httpResponse.statusCode, errorBody)
+        }
+
+        return true
+    }
 }

@@ -4,6 +4,14 @@ import SwiftData
 struct SettingsView: View {
     @Environment(\.modelContext) private var modelContext
     @State private var viewModel = SettingsViewModel()
+    @State private var testState: KeyTestState = .idle
+
+    enum KeyTestState: Equatable {
+        case idle
+        case testing
+        case success
+        case failure(String)
+    }
 
     var body: some View {
         NavigationStack {
@@ -61,6 +69,7 @@ struct SettingsView: View {
                     HStack {
                         Button("Update Key") {
                             viewModel.saveAPIKey()
+                            testState = .idle
                         }
                         .disabled(viewModel.newAPIKey.trimmingCharacters(in: .whitespaces).isEmpty)
 
@@ -68,7 +77,39 @@ struct SettingsView: View {
 
                         Button("Remove", role: .destructive) {
                             viewModel.deleteAPIKey()
+                            testState = .idle
                         }
+                    }
+
+                    // Test connection
+                    Button {
+                        testConnection()
+                    } label: {
+                        HStack {
+                            switch testState {
+                            case .idle:
+                                Image(systemName: "dot.radiowaves.left.and.right")
+                                Text("Test Connection")
+                            case .testing:
+                                ProgressView()
+                                Text("Testing...")
+                            case .success:
+                                Image(systemName: "checkmark.circle.fill")
+                                Text("Connection Successful")
+                                    .foregroundStyle(.green)
+                            case .failure:
+                                Image(systemName: "exclamationmark.triangle.fill")
+                                Text("Connection Failed — Retry")
+                                    .foregroundStyle(.red)
+                            }
+                        }
+                    }
+                    .disabled(testState == .testing || !KeychainService.hasGeminiKey)
+
+                    if case .failure(let message) = testState {
+                        Text(message)
+                            .font(.caption)
+                            .foregroundStyle(.red)
                     }
                 }
 
@@ -108,6 +149,19 @@ struct SettingsView: View {
                 Button("OK") { viewModel.saveMessage = nil }
             } message: {
                 Text(viewModel.saveMessage ?? "")
+            }
+        }
+    }
+
+    private func testConnection() {
+        guard let key = KeychainService.geminiAPIKey else { return }
+        testState = .testing
+        Task {
+            do {
+                _ = try await GeminiService.shared.testConnection(apiKey: key)
+                testState = .success
+            } catch {
+                testState = .failure(error.localizedDescription)
             }
         }
     }

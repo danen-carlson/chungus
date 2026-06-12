@@ -307,6 +307,14 @@ struct SetupStep3_Goals: View {
 
 struct SetupStep4_APIKey: View {
     @Binding var viewModel: OnboardingViewModel
+    @State private var testState: KeyTestState = .idle
+
+    enum KeyTestState: Equatable {
+        case idle
+        case testing
+        case success
+        case failure(String)
+    }
 
     var body: some View {
         ScrollView {
@@ -327,6 +335,50 @@ struct SetupStep4_APIKey: View {
                         .autocorrectionDisabled()
                         .textInputAutocapitalization(.never)
 
+                    HStack {
+                        Button {
+                            testKey()
+                        } label: {
+                            HStack(spacing: 6) {
+                                switch testState {
+                                case .idle:
+                                    Image(systemName: "bolt.horizontal.circle")
+                                    Text("Test Key")
+                                case .testing:
+                                    ProgressView()
+                                        .tint(.white)
+                                    Text("Testing...")
+                                case .success:
+                                    Image(systemName: "checkmark.circle.fill")
+                                    Text("Connected!")
+                                case .failure:
+                                    Image(systemName: "exclamationmark.triangle.fill")
+                                    Text("Retry")
+                                }
+                            }
+                            .frame(maxWidth: .infinity)
+                        }
+                        .buttonStyle(.borderedProminent)
+                        .tint(testButtonColor)
+                        .disabled(viewModel.geminiAPIKey.trimmingCharacters(in: .whitespaces).isEmpty || testState == .testing)
+
+                        if case .success = testState {
+                            // Success state already shown in button
+                        }
+                    }
+
+                    if case .failure(let message) = testState {
+                        Text(message)
+                            .font(.caption)
+                            .foregroundStyle(.red)
+                    }
+
+                    if case .success = testState {
+                        Text("API key is valid and ready to go.")
+                            .font(.caption)
+                            .foregroundStyle(.green)
+                    }
+
                     Link("Get a free API key →", destination: URL(string: "https://aistudio.google.com/apikey")!)
                         .font(.subheadline)
                 }
@@ -346,6 +398,33 @@ struct SetupStep4_APIKey: View {
                 .cardStyle()
             }
             .padding()
+        }
+        .onChange(of: viewModel.geminiAPIKey) { _, _ in
+            testState = .idle
+        }
+    }
+
+    private var testButtonColor: Color {
+        switch testState {
+        case .idle: return .blue
+        case .testing: return .gray
+        case .success: return .green
+        case .failure: return .red
+        }
+    }
+
+    private func testKey() {
+        let key = viewModel.geminiAPIKey.trimmingCharacters(in: .whitespaces)
+        guard !key.isEmpty else { return }
+
+        testState = .testing
+        Task {
+            do {
+                _ = try await GeminiService.shared.testConnection(apiKey: key)
+                testState = .success
+            } catch {
+                testState = .failure(error.localizedDescription)
+            }
         }
     }
 }
