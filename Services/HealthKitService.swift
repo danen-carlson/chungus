@@ -49,7 +49,16 @@ final class HealthKitService: ObservableObject {
             device: .local()
         )
 
-        try await builder.beginCollection(withStart: session.startedAt)
+        // Begin collection
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+            builder.beginCollection(withStart: session.startedAt) { success, error in
+                if let error = error {
+                    continuation.resume(throwing: error)
+                } else {
+                    continuation.resume()
+                }
+            }
+        }
 
         // Add total energy expenditure if we estimate it
         let duration = completedAt.timeIntervalSince(session.startedAt)
@@ -62,17 +71,42 @@ final class HealthKitService: ObservableObject {
             unit: .kilocalorie(),
             doubleValue: estimatedCalories
         )
-        try await builder.add([
-            HKQuantitySample(
-                type: HKQuantityType(.activeEnergyBurned),
-                quantity: energyBurned,
-                start: session.startedAt,
-                end: completedAt
-            )
-        ])
+        let sample = HKQuantitySample(
+            type: HKQuantityType(.activeEnergyBurned),
+            quantity: energyBurned,
+            start: session.startedAt,
+            end: completedAt
+        )
 
-        try await builder.endCollection(withEnd: completedAt)
-        try await builder.finishWorkout()
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+            builder.add([sample]) { success, error in
+                if let error = error {
+                    continuation.resume(throwing: error)
+                } else {
+                    continuation.resume()
+                }
+            }
+        }
+
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+            builder.endCollection(withEnd: completedAt) { success, error in
+                if let error = error {
+                    continuation.resume(throwing: error)
+                } else {
+                    continuation.resume()
+                }
+            }
+        }
+
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+            builder.finishWorkout { workout, error in
+                if let error = error {
+                    continuation.resume(throwing: error)
+                } else {
+                    continuation.resume()
+                }
+            }
+        }
     }
 
     /// Rough calorie estimate for strength training

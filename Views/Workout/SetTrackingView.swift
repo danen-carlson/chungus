@@ -55,7 +55,7 @@ struct SetRow: View {
                 .font(.caption.bold())
                 .frame(width: 36, height: 36)
                 .background(set.isWarmup ? Color.gray.opacity(0.2) : Color.orange.opacity(0.15))
-                .foregroundStyle(set.isWarmup ? .secondary : .orange)
+                .foregroundStyle(set.isWarmup ? Color.secondary : Color.orange)
                 .clipShape(Circle())
 
             // Weight input

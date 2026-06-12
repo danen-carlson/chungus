@@ -43,11 +43,11 @@ struct WorkoutGenerator {
 
     // MARK: - Initial Plan Generation
 
-    func generateInitialPlan(for profile: UserProfile) async throws -> GeneratedPlan {
+    func generateInitialPlan(profileSummary: String) async throws -> GeneratedPlan {
         let prompt = """
         You are an expert personal trainer. Generate a complete workout plan for this user:
 
-        \(profile.promptSummary)
+        \(profileSummary)
 
         Create a workout split that best fits their profile, goals, and available days.
         Choose the optimal split type (PPL, Upper/Lower, Full Body, Bro Split, etc.) based on their days available and goals.
@@ -90,29 +90,18 @@ struct WorkoutGenerator {
     // MARK: - Regenerate Next Workout
 
     func regenerateWorkout(
-        currentTemplate: WorkoutTemplate,
-        recentSessions: [WorkoutSession],
-        profile: UserProfile
+        workoutName: String,
+        targetMuscles: [String],
+        sessionSummaries: String,
+        profileSummary: String
     ) async throws -> GeneratedWorkout {
-        let sessionSummaries = recentSessions.map { session -> String in
-            let exercises = session.exercises.map { ex -> String in
-                let setsSummary = ex.sets
-                    .filter { $0.completed }
-                    .map { "\($0.weightLbs.map { "\($0)lbs" } ?? "BW")×\($0.reps)" }
-                    .joined(separator: ", ")
-                return "\(ex.name): \(setsSummary)"
-            }.joined(separator: "\n")
-            let date = session.startedAt.formatted(date: .abbreviated, time: .omitted)
-            return "Session \(date):\n\(exercises)\nNotes: \(session.overallNotes ?? "none")"
-        }.joined(separator: "\n\n")
-
         let prompt = """
         You are an expert personal trainer. Generate the NEXT version of this workout:
 
-        User profile: \(profile.promptSummary)
+        User profile: \(profileSummary)
 
-        Previous workout: \(currentTemplate.name)
-        Target muscles: \(currentTemplate.targetMuscles.joined(separator: ", "))
+        Previous workout: \(workoutName)
+        Target muscles: \(targetMuscles.joined(separator: ", "))
 
         Recent performance on this workout type:
         \(sessionSummaries)
@@ -132,21 +121,27 @@ struct WorkoutGenerator {
     // MARK: - Exercise Swap
 
     func suggestSwap(
-        for exercise: ExerciseTemplate,
-        in workout: WorkoutTemplate,
-        profile: UserProfile
+        exerciseName: String,
+        muscleGroup: String,
+        exerciseSets: Int,
+        exerciseRepRange: String,
+        exerciseRestSeconds: Int,
+        workoutName: String,
+        targetMuscles: [String],
+        profileSummary: String,
+        equipmentAccess: String
     ) async throws -> ExerciseSwap {
         let prompt = """
         You are an expert personal trainer. Suggest an alternative exercise.
 
-        User profile: \(profile.promptSummary)
+        User profile: \(profileSummary)
 
-        Current exercise: \(exercise.name) (\(exercise.muscleGroup))
-        Workout context: \(workout.name) targeting \(workout.targetMuscles.joined(separator: ", "))
+        Current exercise: \(exerciseName) (\(muscleGroup))
+        Workout context: \(workoutName) targeting \(targetMuscles.joined(separator: ", "))
 
         Suggest ONE alternative exercise that:
-        - Targets the same muscle group (\(exercise.muscleGroup))
-        - Fits the user's equipment (\(profile.equipmentAccess))
+        - Targets the same muscle group (\(muscleGroup))
+        - Fits the user's equipment (\(equipmentAccess))
         - Maintains similar difficulty level
         - Respects any injuries/limitations mentioned
 
@@ -154,10 +149,10 @@ struct WorkoutGenerator {
         {
             "name": "Exercise Name",
             "muscleGroup": "same group",
-            "sets": \(exercise.sets),
-            "repRange": "\(exercise.repRange)",
+            "sets": \(exerciseSets),
+            "repRange": "\(exerciseRepRange)",
             "targetWeightLbs": null,
-            "restSeconds": \(exercise.restSeconds),
+            "restSeconds": \(exerciseRestSeconds),
             "tips": "Brief form cue",
             "reason": "Why this is a good swap"
         }

@@ -166,7 +166,7 @@ final class WorkoutViewModel {
 
     // MARK: - Exercise Swap
 
-    func requestSwap(profile: UserProfile) async {
+    func requestSwap(profileSummary: String, equipmentAccess: String) async {
         guard let exercise = currentExercise,
               let template = template else { return }
 
@@ -175,9 +175,15 @@ final class WorkoutViewModel {
 
         do {
             let suggestion = try await generator.suggestSwap(
-                for: exercise,
-                in: template,
-                profile: profile
+                exerciseName: exercise.name,
+                muscleGroup: exercise.muscleGroup,
+                exerciseSets: exercise.sets,
+                exerciseRepRange: exercise.repRange,
+                exerciseRestSeconds: exercise.restSeconds,
+                workoutName: template.name,
+                targetMuscles: template.targetMuscles,
+                profileSummary: profileSummary,
+                equipmentAccess: equipmentAccess
             )
             swapSuggestion = suggestion
             showSwapSuggestion = true

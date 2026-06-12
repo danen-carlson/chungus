@@ -22,10 +22,10 @@ final class SettingsViewModel {
     var editAdditionalNotes: String = ""
 
     func loadProfile(context: ModelContext) {
-        let descriptor = FetchDescriptor<UserProfile>(
-            sortBy: [SortDescriptor(\.createdAt, order: .reverse)],
-            fetchLimit: 1
+        var descriptor = FetchDescriptor<UserProfile>(
+            sortBy: [SortDescriptor(\.createdAt, order: .reverse)]
         )
+        descriptor.fetchLimit = 1
 
         if let profile = try? context.fetch(descriptor).first {
             self.profile = profile

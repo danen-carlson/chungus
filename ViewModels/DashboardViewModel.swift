@@ -27,10 +27,10 @@ final class DashboardViewModel {
         }
 
         // Fetch recent sessions (last 10)
-        let sessionDescriptor = FetchDescriptor<WorkoutSession>(
-            sortBy: [SortDescriptor(\.startedAt, order: .reverse)],
-            fetchLimit: 10
+        var sessionDescriptor = FetchDescriptor<WorkoutSession>(
+            sortBy: [SortDescriptor(\.startedAt, order: .reverse)]
         )
+        sessionDescriptor.fetchLimit = 10
 
         recentSessions = (try? context.fetch(sessionDescriptor)) ?? []
 

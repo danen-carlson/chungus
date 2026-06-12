@@ -106,7 +106,8 @@ final class OnboardingViewModel {
 
             // Generate initial plan
             let generator = WorkoutGenerator()
-            let generatedPlan = try await generator.generateInitialPlan(for: profile)
+            let profileSummary = profile.promptSummary
+            let generatedPlan = try await generator.generateInitialPlan(profileSummary: profileSummary)
 
             // Convert to SwiftData models
             let plan = WorkoutPlan(splitType: generatedPlan.splitType)

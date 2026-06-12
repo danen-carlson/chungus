@@ -73,7 +73,7 @@ struct ActiveWorkoutView: View {
                             .controlSize(.small)
                         }
                         .padding()
-                        .background(Color(.systemGray6))
+                        .background(Color(.darkGray).opacity(0.3))
                         .clipShape(RoundedRectangle(cornerRadius: 12))
                     }
 

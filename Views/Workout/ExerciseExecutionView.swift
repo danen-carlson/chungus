@@ -82,8 +82,10 @@ struct ExerciseExecutionView: View {
                     // Swap button
                     Button {
                         if let profile = profiles.first {
+                            let summary = profile.promptSummary
+                            let equipment = profile.equipmentAccess
                             Task {
-                                await viewModel.requestSwap(profile: profile)
+                                await viewModel.requestSwap(profileSummary: summary, equipmentAccess: equipment)
                             }
                         }
                     } label: {
