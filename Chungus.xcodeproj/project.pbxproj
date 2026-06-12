@@ -1,0 +1,648 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		00BDC7ED09EF5EA8049DB789 /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C639A1FDCFBDEAF7E655690 /* DashboardView.swift */; };
+		060272AF76EE74283601B5C7 /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86FD0405BAA931AF8C8873ED /* SettingsViewModel.swift */; };
+		0A1D24597999BEB1D7D4FE0D /* OnboardingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02BA1296340F311AF0A170C /* OnboardingViewModel.swift */; };
+		179366D134FA53AF68D74464 /* WorkoutPlan.swift in Sources */ = {isa = PBXBuildFile; fileRef = 287275F58D61BAB6E85FB7F7 /* WorkoutPlan.swift */; };
+		1BC64D1280C24161CF6F5E0A /* WorkoutTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC27368218DFCF92ECE5C3C3 /* WorkoutTemplate.swift */; };
+		1E784E42A2BC926FCE16D99D /* WorkoutGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EA789C2A3F6C8525D2DA4DD /* WorkoutGenerator.swift */; };
+		27AC1D753D1BD713CF4F2F9C /* WorkoutSummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A3B3C42D694192373F5E0E9 /* WorkoutSummaryView.swift */; };
+		2BE7386412E46441883070F8 /* WorkoutSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38074F2AE5111D772D64BCC0 /* WorkoutSession.swift */; };
+		2C0EBCA78D024079D6793B57 /* HealthKitService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0FEBFFA7393B53F05B07A2 /* HealthKitService.swift */; };
+		2C7E8E4957CBF464CFBAD343 /* WatchWorkoutViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CBD813C2051071C9A36211 /* WatchWorkoutViewModel.swift */; };
+		2CF799EF8E06B860CEF574BE /* DashboardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F651386F09CE42652BD48BBB /* DashboardViewModel.swift */; };
+		2DF8BE038D1CF6D8ED6235A7 /* WorkoutDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A19B5D1D52898881D7D6AA2 /* WorkoutDetailView.swift */; };
+		30016D867CD8E3086D1F996D /* GeminiService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D64CE87A6E6BD1AADD641129 /* GeminiService.swift */; };
+		321DCE341936DBCF3D54C9D0 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41877372EA683A28ED2A100A /* SettingsView.swift */; };
+		4B65C1DE039CE273591B6406 /* ChungusApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0FCB2D7909432235210B3E2 /* ChungusApp.swift */; };
+		59440CE5C83ACB6BE2EC3585 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B6DFA19B99AAF1B3EA125FDB /* Assets.xcassets */; };
+		5C9B1F307D2C7C69DB68E4BE /* ActiveWorkoutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCDF0D3DE6F8F9B0C7555A48 /* ActiveWorkoutView.swift */; };
+		60FBD8056850380D0FEB5340 /* ChungusWatch.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = F3F2FFCB74D6C2EDF42E7BB9 /* ChungusWatch.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		70A464FCD9695251026845B6 /* ChungusWatchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3483F5D75B588E5C863343EF /* ChungusWatchApp.swift */; };
+		776820333E84EC904F35AF65 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7CA9813FA2A2364222B9C5A /* Constants.swift */; };
+		7C93258EE43F1E98CF452A02 /* WorkoutViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4198F855DC3F9809A973407B /* WorkoutViewModel.swift */; };
+		894308EEEADDDE242B896DCD /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8519F8E53C9B282AD007C5E /* OnboardingView.swift */; };
+		9B2DEE7D59F128124F9917A5 /* ExerciseExecutionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76DD8C61BBEB1C41BA6DC7F1 /* ExerciseExecutionView.swift */; };
+		9F18ECBF434F52E6EA8975E9 /* SetTrackingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16FDA360ABCB286F33974B95 /* SetTrackingView.swift */; };
+		AB04512526BE9455236FA5B0 /* HistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99A7B1433E9322ED2388E354 /* HistoryView.swift */; };
+		AF34E9BF258BAF8C1080B0AF /* SetRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A4E2290505C705D482606F9 /* SetRecord.swift */; };
+		B06FE29B1594DFC7391266E4 /* UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BAC112026848A22BAA9308 /* UserProfile.swift */; };
+		B4407CEF10AF75EFF7DCDD68 /* WeightProgression.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26E935C86D455305FC04F7EA /* WeightProgression.swift */; };
+		BF8B9AD255C5A724C192BA4E /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CE02B01AC740BC165B5E9B5 /* Extensions.swift */; };
+		CFEE74258C05FEFB8F0E5269 /* ExerciseTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCA58E23348A015469870BDB /* ExerciseTemplate.swift */; };
+		ECCDDF0C5D4DA13E0A9152A2 /* ExerciseSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19D1C8A7238FCFA8EE54504 /* ExerciseSession.swift */; };
+		FC934C698574AD246FC18586 /* KeychainService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8E39AA5D22ECB4C89B7E645 /* KeychainService.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		90CA70B2B114A2E44C2C53C3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 86ABAD417E547CC864996228 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = BA1288E4348C4AA45F161A4F;
+			remoteInfo = ChungusWatch;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		9A5075F0A40927D8D75874C2 /* Embed Watch Content */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
+			dstSubfolderSpec = 16;
+			files = (
+				60FBD8056850380D0FEB5340 /* ChungusWatch.app in Embed Watch Content */,
+			);
+			name = "Embed Watch Content";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		0EA789C2A3F6C8525D2DA4DD /* WorkoutGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutGenerator.swift; sourceTree = "<group>"; };
+		16FDA360ABCB286F33974B95 /* SetTrackingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetTrackingView.swift; sourceTree = "<group>"; };
+		26E935C86D455305FC04F7EA /* WeightProgression.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightProgression.swift; sourceTree = "<group>"; };
+		287275F58D61BAB6E85FB7F7 /* WorkoutPlan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutPlan.swift; sourceTree = "<group>"; };
+		3483F5D75B588E5C863343EF /* ChungusWatchApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChungusWatchApp.swift; sourceTree = "<group>"; };
+		38074F2AE5111D772D64BCC0 /* WorkoutSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutSession.swift; sourceTree = "<group>"; };
+		3CE02B01AC740BC165B5E9B5 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		41877372EA683A28ED2A100A /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		4198F855DC3F9809A973407B /* WorkoutViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutViewModel.swift; sourceTree = "<group>"; };
+		5A4E2290505C705D482606F9 /* SetRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetRecord.swift; sourceTree = "<group>"; };
+		6A0C77F136B7F8007D77EE9A /* Chungus.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Chungus.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		6A19B5D1D52898881D7D6AA2 /* WorkoutDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutDetailView.swift; sourceTree = "<group>"; };
+		76DD8C61BBEB1C41BA6DC7F1 /* ExerciseExecutionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseExecutionView.swift; sourceTree = "<group>"; };
+		86FD0405BAA931AF8C8873ED /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
+		89CBD813C2051071C9A36211 /* WatchWorkoutViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchWorkoutViewModel.swift; sourceTree = "<group>"; };
+		99A7B1433E9322ED2388E354 /* HistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryView.swift; sourceTree = "<group>"; };
+		9A3B3C42D694192373F5E0E9 /* WorkoutSummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutSummaryView.swift; sourceTree = "<group>"; };
+		9C639A1FDCFBDEAF7E655690 /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
+		A8519F8E53C9B282AD007C5E /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
+		B19D1C8A7238FCFA8EE54504 /* ExerciseSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseSession.swift; sourceTree = "<group>"; };
+		B6DFA19B99AAF1B3EA125FDB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		BC27368218DFCF92ECE5C3C3 /* WorkoutTemplate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutTemplate.swift; sourceTree = "<group>"; };
+		BCDF0D3DE6F8F9B0C7555A48 /* ActiveWorkoutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActiveWorkoutView.swift; sourceTree = "<group>"; };
+		C6BAC112026848A22BAA9308 /* UserProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfile.swift; sourceTree = "<group>"; };
+		C8E39AA5D22ECB4C89B7E645 /* KeychainService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainService.swift; sourceTree = "<group>"; };
+		D64CE87A6E6BD1AADD641129 /* GeminiService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeminiService.swift; sourceTree = "<group>"; };
+		DA0FEBFFA7393B53F05B07A2 /* HealthKitService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthKitService.swift; sourceTree = "<group>"; };
+		E02BA1296340F311AF0A170C /* OnboardingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewModel.swift; sourceTree = "<group>"; };
+		E0FCB2D7909432235210B3E2 /* ChungusApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChungusApp.swift; sourceTree = "<group>"; };
+		F3F2FFCB74D6C2EDF42E7BB9 /* ChungusWatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ChungusWatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		F651386F09CE42652BD48BBB /* DashboardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardViewModel.swift; sourceTree = "<group>"; };
+		F7CA9813FA2A2364222B9C5A /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		FCA58E23348A015469870BDB /* ExerciseTemplate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseTemplate.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		11BE31FFA971AABDA65F3D3C /* History */ = {
+			isa = PBXGroup;
+			children = (
+				99A7B1433E9322ED2388E354 /* HistoryView.swift */,
+			);
+			path = History;
+			sourceTree = "<group>";
+		};
+		243BF791DDB7A63D68259529 /* WatchApp */ = {
+			isa = PBXGroup;
+			children = (
+				85C804A0A1362A130E21ACA7 /* ViewModels */,
+				ED8865E30FEADBB67D25F224 /* Views */,
+				3483F5D75B588E5C863343EF /* ChungusWatchApp.swift */,
+			);
+			path = WatchApp;
+			sourceTree = "<group>";
+		};
+		2C2CB3D8E3A929BFFF18E43C /* Workout */ = {
+			isa = PBXGroup;
+			children = (
+				76DD8C61BBEB1C41BA6DC7F1 /* ExerciseExecutionView.swift */,
+				16FDA360ABCB286F33974B95 /* SetTrackingView.swift */,
+				6A19B5D1D52898881D7D6AA2 /* WorkoutDetailView.swift */,
+				9A3B3C42D694192373F5E0E9 /* WorkoutSummaryView.swift */,
+			);
+			path = Workout;
+			sourceTree = "<group>";
+		};
+		4137F05F53AFE20AA7EB18DD /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				F651386F09CE42652BD48BBB /* DashboardViewModel.swift */,
+				E02BA1296340F311AF0A170C /* OnboardingViewModel.swift */,
+				86FD0405BAA931AF8C8873ED /* SettingsViewModel.swift */,
+				4198F855DC3F9809A973407B /* WorkoutViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		4A77CF48DE1135D1D92AB59A /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				41877372EA683A28ED2A100A /* SettingsView.swift */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
+		4E2524CADEF98136F624E4F0 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				8EAD1A5D6921FB3D2F4C0475 /* Dashboard */,
+				11BE31FFA971AABDA65F3D3C /* History */,
+				92626DE3ADF4DE80B7FF6FC1 /* Onboarding */,
+				4A77CF48DE1135D1D92AB59A /* Settings */,
+				2C2CB3D8E3A929BFFF18E43C /* Workout */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		7AEA053AB5E3CDC8D6117BF4 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				D64CE87A6E6BD1AADD641129 /* GeminiService.swift */,
+				DA0FEBFFA7393B53F05B07A2 /* HealthKitService.swift */,
+				C8E39AA5D22ECB4C89B7E645 /* KeychainService.swift */,
+				26E935C86D455305FC04F7EA /* WeightProgression.swift */,
+				0EA789C2A3F6C8525D2DA4DD /* WorkoutGenerator.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		85C804A0A1362A130E21ACA7 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				89CBD813C2051071C9A36211 /* WatchWorkoutViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		87FEA1DF6AAD897D1CBCC736 = {
+			isa = PBXGroup;
+			children = (
+				A9DD18C08EAB0499E5513F12 /* Models */,
+				B584440583FF22E34052595F /* Resources */,
+				7AEA053AB5E3CDC8D6117BF4 /* Services */,
+				884749D24E63A10EC22ADE20 /* Utilities */,
+				4137F05F53AFE20AA7EB18DD /* ViewModels */,
+				4E2524CADEF98136F624E4F0 /* Views */,
+				243BF791DDB7A63D68259529 /* WatchApp */,
+				E0FCB2D7909432235210B3E2 /* ChungusApp.swift */,
+				E9441AB8CB0B01D012AD578D /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		884749D24E63A10EC22ADE20 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				F7CA9813FA2A2364222B9C5A /* Constants.swift */,
+				3CE02B01AC740BC165B5E9B5 /* Extensions.swift */,
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
+		8EAD1A5D6921FB3D2F4C0475 /* Dashboard */ = {
+			isa = PBXGroup;
+			children = (
+				9C639A1FDCFBDEAF7E655690 /* DashboardView.swift */,
+			);
+			path = Dashboard;
+			sourceTree = "<group>";
+		};
+		92626DE3ADF4DE80B7FF6FC1 /* Onboarding */ = {
+			isa = PBXGroup;
+			children = (
+				A8519F8E53C9B282AD007C5E /* OnboardingView.swift */,
+			);
+			path = Onboarding;
+			sourceTree = "<group>";
+		};
+		A9DD18C08EAB0499E5513F12 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				B19D1C8A7238FCFA8EE54504 /* ExerciseSession.swift */,
+				FCA58E23348A015469870BDB /* ExerciseTemplate.swift */,
+				5A4E2290505C705D482606F9 /* SetRecord.swift */,
+				C6BAC112026848A22BAA9308 /* UserProfile.swift */,
+				287275F58D61BAB6E85FB7F7 /* WorkoutPlan.swift */,
+				38074F2AE5111D772D64BCC0 /* WorkoutSession.swift */,
+				BC27368218DFCF92ECE5C3C3 /* WorkoutTemplate.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		B584440583FF22E34052595F /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				F30F67C0F6F35EBAE365CC94 /* ExerciseImages */,
+				B6DFA19B99AAF1B3EA125FDB /* Assets.xcassets */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		E9441AB8CB0B01D012AD578D /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				6A0C77F136B7F8007D77EE9A /* Chungus.app */,
+				F3F2FFCB74D6C2EDF42E7BB9 /* ChungusWatch.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		ED8865E30FEADBB67D25F224 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				BCDF0D3DE6F8F9B0C7555A48 /* ActiveWorkoutView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		F30F67C0F6F35EBAE365CC94 /* ExerciseImages */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = ExerciseImages;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		BA1288E4348C4AA45F161A4F /* ChungusWatch */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FE484607F241F9EDBA015034 /* Build configuration list for PBXNativeTarget "ChungusWatch" */;
+			buildPhases = (
+				CCB93148454255C6733DA92E /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ChungusWatch;
+			packageProductDependencies = (
+			);
+			productName = ChungusWatch;
+			productReference = F3F2FFCB74D6C2EDF42E7BB9 /* ChungusWatch.app */;
+			productType = "com.apple.product-type.application";
+		};
+		CD5FDDDD9EC5514543C1488B /* Chungus */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 94AE409449665CA9F0F69D3A /* Build configuration list for PBXNativeTarget "Chungus" */;
+			buildPhases = (
+				B5655EE0C42669263869800B /* Sources */,
+				60F852E6540A8B9FDC836826 /* Resources */,
+				9A5075F0A40927D8D75874C2 /* Embed Watch Content */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				640E16F41B387CD4BD949B70 /* PBXTargetDependency */,
+			);
+			name = Chungus;
+			packageProductDependencies = (
+			);
+			productName = Chungus;
+			productReference = 6A0C77F136B7F8007D77EE9A /* Chungus.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		86ABAD417E547CC864996228 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 2600;
+				TargetAttributes = {
+					BA1288E4348C4AA45F161A4F = {
+						DevelopmentTeam = AQQ8UWSCZC;
+					};
+					CD5FDDDD9EC5514543C1488B = {
+						DevelopmentTeam = AQQ8UWSCZC;
+					};
+				};
+			};
+			buildConfigurationList = 773AF795AD349633CD559993 /* Build configuration list for PBXProject "Chungus" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 87FEA1DF6AAD897D1CBCC736;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = E9441AB8CB0B01D012AD578D /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				CD5FDDDD9EC5514543C1488B /* Chungus */,
+				BA1288E4348C4AA45F161A4F /* ChungusWatch */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		60F852E6540A8B9FDC836826 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				59440CE5C83ACB6BE2EC3585 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		B5655EE0C42669263869800B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4B65C1DE039CE273591B6406 /* ChungusApp.swift in Sources */,
+				776820333E84EC904F35AF65 /* Constants.swift in Sources */,
+				00BDC7ED09EF5EA8049DB789 /* DashboardView.swift in Sources */,
+				2CF799EF8E06B860CEF574BE /* DashboardViewModel.swift in Sources */,
+				9B2DEE7D59F128124F9917A5 /* ExerciseExecutionView.swift in Sources */,
+				ECCDDF0C5D4DA13E0A9152A2 /* ExerciseSession.swift in Sources */,
+				CFEE74258C05FEFB8F0E5269 /* ExerciseTemplate.swift in Sources */,
+				BF8B9AD255C5A724C192BA4E /* Extensions.swift in Sources */,
+				30016D867CD8E3086D1F996D /* GeminiService.swift in Sources */,
+				2C0EBCA78D024079D6793B57 /* HealthKitService.swift in Sources */,
+				AB04512526BE9455236FA5B0 /* HistoryView.swift in Sources */,
+				FC934C698574AD246FC18586 /* KeychainService.swift in Sources */,
+				894308EEEADDDE242B896DCD /* OnboardingView.swift in Sources */,
+				0A1D24597999BEB1D7D4FE0D /* OnboardingViewModel.swift in Sources */,
+				AF34E9BF258BAF8C1080B0AF /* SetRecord.swift in Sources */,
+				9F18ECBF434F52E6EA8975E9 /* SetTrackingView.swift in Sources */,
+				321DCE341936DBCF3D54C9D0 /* SettingsView.swift in Sources */,
+				060272AF76EE74283601B5C7 /* SettingsViewModel.swift in Sources */,
+				B06FE29B1594DFC7391266E4 /* UserProfile.swift in Sources */,
+				B4407CEF10AF75EFF7DCDD68 /* WeightProgression.swift in Sources */,
+				2DF8BE038D1CF6D8ED6235A7 /* WorkoutDetailView.swift in Sources */,
+				1E784E42A2BC926FCE16D99D /* WorkoutGenerator.swift in Sources */,
+				179366D134FA53AF68D74464 /* WorkoutPlan.swift in Sources */,
+				2BE7386412E46441883070F8 /* WorkoutSession.swift in Sources */,
+				27AC1D753D1BD713CF4F2F9C /* WorkoutSummaryView.swift in Sources */,
+				1BC64D1280C24161CF6F5E0A /* WorkoutTemplate.swift in Sources */,
+				7C93258EE43F1E98CF452A02 /* WorkoutViewModel.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CCB93148454255C6733DA92E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5C9B1F307D2C7C69DB68E4BE /* ActiveWorkoutView.swift in Sources */,
+				70A464FCD9695251026845B6 /* ChungusWatchApp.swift in Sources */,
+				2C7E8E4957CBF464CFBAD343 /* WatchWorkoutViewModel.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		640E16F41B387CD4BD949B70 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = BA1288E4348C4AA45F161A4F /* ChungusWatch */;
+			targetProxy = 90CA70B2B114A2E44C2C53C3 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		2B6EDCD4D2BE06618A21B519 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = AQQ8UWSCZC;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 6.2;
+				WATCHOS_DEPLOYMENT_TARGET = 11.0;
+			};
+			name = Debug;
+		};
+		4988796A21064FD76B4EFBAF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				INFOPLIST_KEY_CFBundleDisplayName = Chungus;
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.chungus.app;
+				PRODUCT_BUNDLE_IDENTIFIER = com.chungus.app.watchkitapp;
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 11.0;
+			};
+			name = Debug;
+		};
+		4CBC08BFCC62E168B114999B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Chungus.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				INFOPLIST_KEY_CFBundleDisplayName = Chungus;
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "Chungus reads your workout history to track your progress.";
+				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "Chungus saves your workouts to Apple Health.";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.chungus.app;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		CDDBE788AE258A8D408671B5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				INFOPLIST_KEY_CFBundleDisplayName = Chungus;
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.chungus.app;
+				PRODUCT_BUNDLE_IDENTIFIER = com.chungus.app.watchkitapp;
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 11.0;
+			};
+			name = Release;
+		};
+		E367CF6EA5DAA832A50D7609 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Chungus.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				INFOPLIST_KEY_CFBundleDisplayName = Chungus;
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "Chungus reads your workout history to track your progress.";
+				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "Chungus saves your workouts to Apple Health.";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.chungus.app;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		FAB8E9FEB871A99D71187690 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = AQQ8UWSCZC;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 6.2;
+				WATCHOS_DEPLOYMENT_TARGET = 11.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		773AF795AD349633CD559993 /* Build configuration list for PBXProject "Chungus" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2B6EDCD4D2BE06618A21B519 /* Debug */,
+				FAB8E9FEB871A99D71187690 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		94AE409449665CA9F0F69D3A /* Build configuration list for PBXNativeTarget "Chungus" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E367CF6EA5DAA832A50D7609 /* Debug */,
+				4CBC08BFCC62E168B114999B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		FE484607F241F9EDBA015034 /* Build configuration list for PBXNativeTarget "ChungusWatch" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4988796A21064FD76B4EFBAF /* Debug */,
+				CDDBE788AE258A8D408671B5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 86ABAD417E547CC864996228 /* Project object */;
+}
