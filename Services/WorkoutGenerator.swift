@@ -84,7 +84,24 @@ struct WorkoutGenerator {
         }
         """
 
-        return try await gemini.generateJSON(prompt: prompt, responseType: GeneratedPlan.self)
+        // Retry up to 2 times with long timeout (plan generation can take 30-60s)
+        var lastError: Error?
+        for attempt in 1...2 {
+            do {
+                return try await gemini.generateJSON(
+                    prompt: prompt,
+                    responseType: GeneratedPlan.self,
+                    useLongTimeout: true
+                )
+            } catch {
+                lastError = error
+                if attempt < 2 {
+                    print("[Chungus] Plan generation attempt \(attempt) failed, retrying...")
+                    try? await Task.sleep(for: .seconds(2))
+                }
+            }
+        }
+        throw lastError!
     }
 
     // MARK: - Regenerate Next Workout
@@ -115,7 +132,7 @@ struct WorkoutGenerator {
         Return the same JSON format as a single workout.
         """
 
-        return try await gemini.generateJSON(prompt: prompt, responseType: GeneratedWorkout.self)
+        return try await gemini.generateJSON(prompt: prompt, responseType: GeneratedWorkout.self, useLongTimeout: true)
     }
 
     // MARK: - Exercise Swap
