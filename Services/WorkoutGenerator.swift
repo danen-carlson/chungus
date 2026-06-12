@@ -44,50 +44,27 @@ struct WorkoutGenerator {
     // MARK: - Initial Plan Generation
 
     func generateInitialPlan(profileSummary: String) async throws -> GeneratedPlan {
+        // Simplified prompt: fewer exercises, no alternatives (generated on-demand for swaps)
         let prompt = """
-        You are an expert personal trainer. Generate a complete workout plan for this user:
+        Create a workout plan. Profile: \(profileSummary)
 
-        \(profileSummary)
+        Rules:
+        - Choose the best split for their days/goal
+        - 5-6 exercises per workout max
+        - Rep ranges like "8-12"
+        - Weights: null for beginners, estimated for experienced
+        - Rest: 60-90s hypertrophy, 120-180s strength
+        - Short tip per exercise
 
-        Create a workout split that best fits their profile, goals, and available days.
-        Choose the optimal split type (PPL, Upper/Lower, Full Body, Bro Split, etc.) based on their days available and goals.
-
-        For each exercise:
-        - Use rep ranges (e.g. "8-12") not fixed reps
-        - Suggest starting weights based on their experience level (nil/0 for beginners who should find their weight)
-        - Include rest periods appropriate for the goal (hypertrophy: 60-90s, strength: 2-3min)
-        - Add brief form cues or tips
-        - Provide 2-3 alternative exercises for swaps
-
-        Return a JSON object with this structure:
-        {
-            "splitType": "PPL",
-            "workouts": [
-                {
-                    "name": "Push Day",
-                    "targetMuscles": ["chest", "shoulders", "triceps"],
-                    "estimatedDurationMin": 60,
-                    "exercises": [
-                        {
-                            "name": "Barbell Bench Press",
-                            "muscleGroup": "chest",
-                            "sets": 4,
-                            "repRange": "8-10",
-                            "targetWeightLbs": 135,
-                            "restSeconds": 90,
-                            "tips": "Keep shoulder blades retracted, control the negative",
-                            "alternatives": ["Dumbbell Bench Press", "Machine Chest Press"]
-                        }
-                    ]
-                }
-            ]
-        }
+        Return JSON exactly matching this schema:
+        {"splitType":"string","workouts":[{"name":"string","targetMuscles":["string"],"estimatedDurationMin":60,"exercises":[{"name":"string","muscleGroup":"string","sets":3,"repRange":"8-12","targetWeightLbs":null,"restSeconds":90,"tips":"string","alternatives":[]}]}]}
         """
 
-        // Retry up to 2 times with long timeout (plan generation can take 30-60s)
+        // Retry up to 3 times with increasing delays
         var lastError: Error?
-        for attempt in 1...2 {
+        for attempt in 1...3 {
             do {
+                print("[Chungus] Plan generation attempt \(attempt)/3...")
                 return try await gemini.generateJSON(
                     prompt: prompt,
                     responseType: GeneratedPlan.self,
@@ -95,9 +72,10 @@ struct WorkoutGenerator {
                 )
             } catch {
                 lastError = error
-                if attempt < 2 {
-                    print("[Chungus] Plan generation attempt \(attempt) failed, retrying...")
-                    try? await Task.sleep(for: .seconds(2))
+                if attempt < 3 {
+                    let delay = Double(attempt) * 3.0
+                    print("[Chungus] Attempt \(attempt) failed, waiting \(delay)s before retry...")
+                    try? await Task.sleep(for: .seconds(delay))
                 }
             }
         }

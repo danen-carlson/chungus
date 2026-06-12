@@ -105,6 +105,16 @@ final class OnboardingViewModel {
         print("[Chungus] Profile: \(profileSummary)")
 
         do {
+            // Quick connectivity check before the big generation call
+            print("[Chungus] Checking API connectivity...")
+            do {
+                _ = try await GeminiService.shared.testConnection(apiKey: trimmedKey)
+                print("[Chungus] ✅ API reachable")
+            } catch {
+                print("[Chungus] ❌ API unreachable: \(error)")
+                throw GeminiService.GeminiError.httpError(-1, "Cannot reach Gemini API. Check your internet connection and try again.")
+            }
+
             // Generate initial plan BEFORE saving anything to SwiftData
             // This way if Gemini fails, user stays on onboarding and can retry
             let generator = WorkoutGenerator()
