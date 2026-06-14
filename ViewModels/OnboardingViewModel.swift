@@ -32,15 +32,15 @@ final class OnboardingViewModel {
     var timeConstraintMin: Int? = nil
     var additionalNotes: String = ""
 
-    // Step 4: API Key
-    var geminiAPIKey: String = ""
+    // Step 4: Server connectivity
+    var gatewayConnected: Bool = false
 
     var canProceed: Bool {
         switch currentStep {
         case 0: return age >= 13 && weightLbs > 0
         case 1: return daysAvailable >= 1 && daysAvailable <= 7
         case 2: return true
-        case 3: return !geminiAPIKey.trimmingCharacters(in: .whitespaces).isEmpty
+        case 3: return gatewayConnected
         default: return false
         }
     }
@@ -94,31 +94,16 @@ final class OnboardingViewModel {
         isGenerating = true
         generationError = nil
 
-        // Save API key first
-        let trimmedKey = geminiAPIKey.trimmingCharacters(in: .whitespaces)
-        KeychainService.geminiAPIKey = trimmedKey
-        print("[Chungus] API key saved: \(trimmedKey.prefix(8))...")
-
         // Build profile (don't insert yet — wait until plan is generated)
         let profile = buildProfile()
         let profileSummary = profile.promptSummary
         print("[Chungus] Profile: \(profileSummary)")
 
         do {
-            // Quick connectivity check before the big generation call
-            print("[Chungus] Checking API connectivity...")
-            do {
-                _ = try await GeminiService.shared.testConnection(apiKey: trimmedKey)
-                print("[Chungus] ✅ API reachable")
-            } catch {
-                print("[Chungus] ❌ API unreachable: \(error)")
-                throw GeminiService.GeminiError.httpError(-1, "Cannot reach Gemini API. Check your internet connection and try again.")
-            }
-
-            // Generate initial plan BEFORE saving anything to SwiftData
-            // This way if Gemini fails, user stays on onboarding and can retry
+            // Generate initial plan via Gateway (RAG + Venice AI)
+            // This way if generation fails, user stays on onboarding and can retry
             let generator = WorkoutGenerator()
-            print("[Chungus] Calling Gemini to generate plan...")
+            print("[Chungus] Calling Gateway to generate plan...")
             let generatedPlan = try await generator.generateInitialPlan(profileSummary: profileSummary)
             print("[Chungus] Plan received: \(generatedPlan.splitType) with \(generatedPlan.workouts.count) workouts")
 

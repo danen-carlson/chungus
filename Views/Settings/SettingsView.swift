@@ -4,9 +4,9 @@ import SwiftData
 struct SettingsView: View {
     @Environment(\.modelContext) private var modelContext
     @State private var viewModel = SettingsViewModel()
-    @State private var testState: KeyTestState = .idle
+    @State private var gatewayTestState: GatewayTestState = .idle
 
-    enum KeyTestState: Equatable {
+    enum GatewayTestState: Equatable {
         case idle
         case testing
         case success
@@ -52,41 +52,13 @@ struct SettingsView: View {
                         .frame(minHeight: 60)
                 }
 
-                // API Key
-                Section("Gemini API") {
-                    HStack {
-                        Text("API Key")
-                        Spacer()
-                        Text(viewModel.apiKeyMasked)
-                            .foregroundStyle(.secondary)
-                            .lineLimit(1)
-                    }
-
-                    SecureField("New API key", text: $viewModel.newAPIKey)
-                        .autocorrectionDisabled()
-                        .textInputAutocapitalization(.never)
-
-                    HStack {
-                        Button("Update Key") {
-                            viewModel.saveAPIKey()
-                            testState = .idle
-                        }
-                        .disabled(viewModel.newAPIKey.trimmingCharacters(in: .whitespaces).isEmpty)
-
-                        Spacer()
-
-                        Button("Remove", role: .destructive) {
-                            viewModel.deleteAPIKey()
-                            testState = .idle
-                        }
-                    }
-
-                    // Test connection
+                // Server Connection
+                Section("AI Server") {
                     Button {
-                        testConnection()
+                        testGateway()
                     } label: {
                         HStack {
-                            switch testState {
+                            switch gatewayTestState {
                             case .idle:
                                 Image(systemName: "dot.radiowaves.left.and.right")
                                 Text("Test Connection")
@@ -104,12 +76,19 @@ struct SettingsView: View {
                             }
                         }
                     }
-                    .disabled(testState == .testing || !KeychainService.hasGeminiKey)
 
-                    if case .failure(let message) = testState {
+                    if case .failure(let message) = gatewayTestState {
                         Text(message)
                             .font(.caption)
                             .foregroundStyle(.red)
+                    }
+
+                    HStack {
+                        Text("Server")
+                        Spacer()
+                        Text("gateway.hankbot.online")
+                            .foregroundStyle(.secondary)
+                            .font(.caption)
                     }
                 }
 
@@ -153,15 +132,22 @@ struct SettingsView: View {
         }
     }
 
-    private func testConnection() {
-        guard let key = KeychainService.geminiAPIKey else { return }
-        testState = .testing
+    private func testGateway() {
+        gatewayTestState = .testing
         Task {
             do {
-                _ = try await GeminiService.shared.testConnection(apiKey: key)
-                testState = .success
+                let gateway = GatewayWorkoutService.shared
+                let response = try await gateway.generateWorkoutJSON(
+                    prompt: "Reply with just the word OK. No JSON, no other text.",
+                    timeout: 15.0
+                )
+                if response.contains("OK") {
+                    gatewayTestState = .success
+                } else {
+                    gatewayTestState = .failure("Unexpected server response.")
+                }
             } catch {
-                testState = .failure(error.localizedDescription)
+                gatewayTestState = .failure(error.localizedDescription)
             }
         }
     }

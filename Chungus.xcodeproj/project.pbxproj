@@ -10,6 +10,7 @@
 		00BDC7ED09EF5EA8049DB789 /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C639A1FDCFBDEAF7E655690 /* DashboardView.swift */; };
 		060272AF76EE74283601B5C7 /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86FD0405BAA931AF8C8873ED /* SettingsViewModel.swift */; };
 		0A1D24597999BEB1D7D4FE0D /* OnboardingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02BA1296340F311AF0A170C /* OnboardingViewModel.swift */; };
+		11B4AB667CBE45483DCBBA4B /* Starscream in Frameworks */ = {isa = PBXBuildFile; productRef = 7519543526C9EF6F99C9EEBB /* Starscream */; };
 		179366D134FA53AF68D74464 /* WorkoutPlan.swift in Sources */ = {isa = PBXBuildFile; fileRef = 287275F58D61BAB6E85FB7F7 /* WorkoutPlan.swift */; };
 		1BC64D1280C24161CF6F5E0A /* WorkoutTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC27368218DFCF92ECE5C3C3 /* WorkoutTemplate.swift */; };
 		1E784E42A2BC926FCE16D99D /* WorkoutGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EA789C2A3F6C8525D2DA4DD /* WorkoutGenerator.swift */; };
@@ -19,7 +20,6 @@
 		2C7E8E4957CBF464CFBAD343 /* WatchWorkoutViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CBD813C2051071C9A36211 /* WatchWorkoutViewModel.swift */; };
 		2CF799EF8E06B860CEF574BE /* DashboardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F651386F09CE42652BD48BBB /* DashboardViewModel.swift */; };
 		2DF8BE038D1CF6D8ED6235A7 /* WorkoutDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A19B5D1D52898881D7D6AA2 /* WorkoutDetailView.swift */; };
-		30016D867CD8E3086D1F996D /* GeminiService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D64CE87A6E6BD1AADD641129 /* GeminiService.swift */; };
 		31D9F3D1950F159EC9C93EF0 /* WatchExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1968D7EC54B1CC62981B8EBB /* WatchExtensions.swift */; };
 		321DCE341936DBCF3D54C9D0 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41877372EA683A28ED2A100A /* SettingsView.swift */; };
 		4B65C1DE039CE273591B6406 /* ChungusApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0FCB2D7909432235210B3E2 /* ChungusApp.swift */; };
@@ -36,6 +36,7 @@
 		AF34E9BF258BAF8C1080B0AF /* SetRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A4E2290505C705D482606F9 /* SetRecord.swift */; };
 		B06FE29B1594DFC7391266E4 /* UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BAC112026848A22BAA9308 /* UserProfile.swift */; };
 		B4407CEF10AF75EFF7DCDD68 /* WeightProgression.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26E935C86D455305FC04F7EA /* WeightProgression.swift */; };
+		B45EF04DA91613E23F34004C /* GatewayWorkoutService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7408025C6625F31741FF61F /* GatewayWorkoutService.swift */; };
 		BF8B9AD255C5A724C192BA4E /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CE02B01AC740BC165B5E9B5 /* Extensions.swift */; };
 		CFEE74258C05FEFB8F0E5269 /* ExerciseTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCA58E23348A015469870BDB /* ExerciseTemplate.swift */; };
 		ECCDDF0C5D4DA13E0A9152A2 /* ExerciseSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19D1C8A7238FCFA8EE54504 /* ExerciseSession.swift */; };
@@ -93,7 +94,7 @@
 		BCDF0D3DE6F8F9B0C7555A48 /* ActiveWorkoutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActiveWorkoutView.swift; sourceTree = "<group>"; };
 		C6BAC112026848A22BAA9308 /* UserProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfile.swift; sourceTree = "<group>"; };
 		C8E39AA5D22ECB4C89B7E645 /* KeychainService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainService.swift; sourceTree = "<group>"; };
-		D64CE87A6E6BD1AADD641129 /* GeminiService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeminiService.swift; sourceTree = "<group>"; };
+		D7408025C6625F31741FF61F /* GatewayWorkoutService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GatewayWorkoutService.swift; sourceTree = "<group>"; };
 		DA0FEBFFA7393B53F05B07A2 /* HealthKitService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthKitService.swift; sourceTree = "<group>"; };
 		E02BA1296340F311AF0A170C /* OnboardingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewModel.swift; sourceTree = "<group>"; };
 		E0FCB2D7909432235210B3E2 /* ChungusApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChungusApp.swift; sourceTree = "<group>"; };
@@ -102,6 +103,17 @@
 		F7CA9813FA2A2364222B9C5A /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		FCA58E23348A015469870BDB /* ExerciseTemplate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseTemplate.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		1A0B7B3B001F25CF5E9266B0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				11B4AB667CBE45483DCBBA4B /* Starscream in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
 		11BE31FFA971AABDA65F3D3C /* History */ = {
@@ -168,7 +180,7 @@
 		7AEA053AB5E3CDC8D6117BF4 /* Services */ = {
 			isa = PBXGroup;
 			children = (
-				D64CE87A6E6BD1AADD641129 /* GeminiService.swift */,
+				D7408025C6625F31741FF61F /* GatewayWorkoutService.swift */,
 				DA0FEBFFA7393B53F05B07A2 /* HealthKitService.swift */,
 				C8E39AA5D22ECB4C89B7E645 /* KeychainService.swift */,
 				26E935C86D455305FC04F7EA /* WeightProgression.swift */,
@@ -298,6 +310,7 @@
 			buildPhases = (
 				B5655EE0C42669263869800B /* Sources */,
 				60F852E6540A8B9FDC836826 /* Resources */,
+				1A0B7B3B001F25CF5E9266B0 /* Frameworks */,
 				9A5075F0A40927D8D75874C2 /* Embed Watch Content */,
 			);
 			buildRules = (
@@ -307,6 +320,7 @@
 			);
 			name = Chungus;
 			packageProductDependencies = (
+				7519543526C9EF6F99C9EEBB /* Starscream */,
 			);
 			productName = Chungus;
 			productReference = 6A0C77F136B7F8007D77EE9A /* Chungus.app */;
@@ -339,6 +353,9 @@
 			);
 			mainGroup = 87FEA1DF6AAD897D1CBCC736;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				E98D195F9F95B7604518ABA4 /* XCRemoteSwiftPackageReference "Starscream" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = E9441AB8CB0B01D012AD578D /* Products */;
 			projectDirPath = "";
@@ -374,7 +391,7 @@
 				ECCDDF0C5D4DA13E0A9152A2 /* ExerciseSession.swift in Sources */,
 				CFEE74258C05FEFB8F0E5269 /* ExerciseTemplate.swift in Sources */,
 				BF8B9AD255C5A724C192BA4E /* Extensions.swift in Sources */,
-				30016D867CD8E3086D1F996D /* GeminiService.swift in Sources */,
+				B45EF04DA91613E23F34004C /* GatewayWorkoutService.swift in Sources */,
 				2C0EBCA78D024079D6793B57 /* HealthKitService.swift in Sources */,
 				AB04512526BE9455236FA5B0 /* HistoryView.swift in Sources */,
 				FC934C698574AD246FC18586 /* KeychainService.swift in Sources */,
@@ -664,6 +681,25 @@
 			defaultConfigurationName = Debug;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		E98D195F9F95B7604518ABA4 /* XCRemoteSwiftPackageReference "Starscream" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/daltoniam/Starscream.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.0.8;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		7519543526C9EF6F99C9EEBB /* Starscream */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E98D195F9F95B7604518ABA4 /* XCRemoteSwiftPackageReference "Starscream" */;
+			productName = Starscream;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 86ABAD417E547CC864996228 /* Project object */;
 }

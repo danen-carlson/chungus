@@ -1,9 +1,9 @@
 import Foundation
 
-/// Generates workout plans and exercise suggestions via Gemini
+/// Generates workout plans and exercise suggestions via OpenClaw Gateway (RAG + Venice AI)
 struct WorkoutGenerator {
 
-    private let gemini = GeminiService.shared
+    private let gateway = GatewayWorkoutService.shared
 
     // MARK: - Response Models (for JSON decoding)
 
@@ -44,7 +44,7 @@ struct WorkoutGenerator {
     // MARK: - Initial Plan Generation
 
     func generateInitialPlan(profileSummary: String) async throws -> GeneratedPlan {
-        // Simplified prompt: fewer exercises, no alternatives (generated on-demand for swaps)
+        // The Gateway will automatically trigger the fitness-rag skill based on this prompt
         let prompt = """
         Create a workout plan. Profile: \(profileSummary)
 
@@ -55,6 +55,7 @@ struct WorkoutGenerator {
         - Weights: null for beginners, estimated for experienced
         - Rest: 60-90s hypertrophy, 120-180s strength
         - Short tip per exercise
+        - CRITICAL: User has a history of bilateral shoulder dislocations (left shoulder recovering). NO behind-the-neck movements, deep dips, or heavy overhead barbell work. ALWAYS include scapular/rotator cuff prehab.
 
         Return JSON exactly matching this schema:
         {"splitType":"string","workouts":[{"name":"string","targetMuscles":["string"],"estimatedDurationMin":60,"exercises":[{"name":"string","muscleGroup":"string","sets":3,"repRange":"8-12","targetWeightLbs":null,"restSeconds":90,"tips":"string","alternatives":[]}]}]}
@@ -64,12 +65,15 @@ struct WorkoutGenerator {
         var lastError: Error?
         for attempt in 1...3 {
             do {
-                print("[Chungus] Plan generation attempt \(attempt)/3...")
-                return try await gemini.generateJSON(
-                    prompt: prompt,
-                    responseType: GeneratedPlan.self,
-                    useLongTimeout: true
-                )
+                print("[Chungus] Plan generation attempt \(attempt)/3 via Gateway...")
+                let rawJSON = try await gateway.generateWorkoutJSON(prompt: prompt, timeout: 45.0)
+                
+                guard let jsonData = rawJSON.data(using: .utf8) else {
+                    throw NSError(domain: "WorkoutGenerator", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to encode response to UTF-8"])
+                }
+                
+                let decoder = JSONDecoder()
+                return try decoder.decode(GeneratedPlan.self, from: jsonData)
             } catch {
                 lastError = error
                 if attempt < 3 {
@@ -106,11 +110,17 @@ struct WorkoutGenerator {
         - Reps/sets (progressive overload principles)
         - Exercise variety (rotate exercises every few weeks to prevent staleness)
         - Consider deload if this is approximately every 4th week
+        - CRITICAL: User has a history of bilateral shoulder dislocations (left shoulder recovering). NO behind-the-neck movements, deep dips, or heavy overhead barbell work. ALWAYS include scapular/rotator cuff prehab.
 
         Return the same JSON format as a single workout.
         """
 
-        return try await gemini.generateJSON(prompt: prompt, responseType: GeneratedWorkout.self, useLongTimeout: true)
+        let rawJSON = try await gateway.generateWorkoutJSON(prompt: prompt, timeout: 45.0)
+        guard let jsonData = rawJSON.data(using: .utf8) else {
+            throw NSError(domain: "WorkoutGenerator", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to encode response to UTF-8"])
+        }
+        let decoder = JSONDecoder()
+        return try decoder.decode(GeneratedWorkout.self, from: jsonData)
     }
 
     // MARK: - Exercise Swap
@@ -139,6 +149,7 @@ struct WorkoutGenerator {
         - Fits the user's equipment (\(equipmentAccess))
         - Maintains similar difficulty level
         - Respects any injuries/limitations mentioned
+        - CRITICAL: User has a history of bilateral shoulder dislocations (left shoulder recovering). NO behind-the-neck movements, deep dips, or heavy overhead barbell work.
 
         Return JSON:
         {
@@ -153,6 +164,11 @@ struct WorkoutGenerator {
         }
         """
 
-        return try await gemini.generateJSON(prompt: prompt, responseType: ExerciseSwap.self)
+        let rawJSON = try await gateway.generateWorkoutJSON(prompt: prompt, timeout: 30.0)
+        guard let jsonData = rawJSON.data(using: .utf8) else {
+            throw NSError(domain: "WorkoutGenerator", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to encode response to UTF-8"])
+        }
+        let decoder = JSONDecoder()
+        return try decoder.decode(ExerciseSwap.self, from: jsonData)
     }
 }

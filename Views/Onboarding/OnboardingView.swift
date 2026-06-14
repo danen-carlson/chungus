@@ -31,7 +31,7 @@ struct OnboardingView: View {
                     SetupStep3_Goals(viewModel: $viewModel)
                         .tag(2)
 
-                    SetupStep4_APIKey(viewModel: $viewModel)
+                    SetupStep4_Gateway(viewModel: $viewModel)
                         .tag(3)
                 }
                 .tabViewStyle(.page(indexDisplayMode: .never))
@@ -367,13 +367,13 @@ struct SetupStep3_Goals: View {
     }
 }
 
-// MARK: - Step 4: API Key
+// MARK: - Step 4: Gateway Connection
 
-struct SetupStep4_APIKey: View {
+struct SetupStep4_Gateway: View {
     @Binding var viewModel: OnboardingViewModel
-    @State private var testState: KeyTestState = .idle
+    @State private var testState: GatewayTestState = .idle
 
-    enum KeyTestState: Equatable {
+    enum GatewayTestState: Equatable {
         case idle
         case testing
         case success
@@ -387,49 +387,38 @@ struct SetupStep4_APIKey: View {
                     .font(.title2.bold())
 
                 VStack(alignment: .leading, spacing: 12) {
-                    Label("Gemini API Key", systemImage: "key.fill")
+                    Label("Server Connection", systemImage: "antenna.radiowaves.left.and.right")
                         .font(.headline)
 
-                    Text("Chungus uses Google Gemini to generate personalized workout plans. You'll need a free API key.")
+                    Text("Chungus connects to a cloud AI server to generate personalized workout plans backed by fitness research. No API key needed.")
                         .font(.body)
                         .foregroundStyle(.secondary)
 
-                    SecureField("Paste your Gemini API key", text: $viewModel.geminiAPIKey)
-                        .textFieldStyle(.roundedBorder)
-                        .autocorrectionDisabled()
-                        .textInputAutocapitalization(.never)
-
-                    HStack {
-                        Button {
-                            testKey()
-                        } label: {
-                            HStack(spacing: 6) {
-                                switch testState {
-                                case .idle:
-                                    Image(systemName: "bolt.horizontal.circle")
-                                    Text("Test Key")
-                                case .testing:
-                                    ProgressView()
-                                        .tint(.white)
-                                    Text("Testing...")
-                                case .success:
-                                    Image(systemName: "checkmark.circle.fill")
-                                    Text("Connected!")
-                                case .failure:
-                                    Image(systemName: "exclamationmark.triangle.fill")
-                                    Text("Retry")
-                                }
+                    Button {
+                        testGateway()
+                    } label: {
+                        HStack(spacing: 6) {
+                            switch testState {
+                            case .idle:
+                                Image(systemName: "bolt.horizontal.circle")
+                                Text("Test Connection")
+                            case .testing:
+                                ProgressView()
+                                    .tint(.white)
+                                Text("Connecting...")
+                            case .success:
+                                Image(systemName: "checkmark.circle.fill")
+                                Text("Connected!")
+                            case .failure:
+                                Image(systemName: "exclamationmark.triangle.fill")
+                                Text("Retry")
                             }
-                            .frame(maxWidth: .infinity)
                         }
-                        .buttonStyle(.borderedProminent)
-                        .tint(testButtonColor)
-                        .disabled(viewModel.geminiAPIKey.trimmingCharacters(in: .whitespaces).isEmpty || testState == .testing)
-
-                        if case .success = testState {
-                            // Success state already shown in button
-                        }
+                        .frame(maxWidth: .infinity)
                     }
+                    .buttonStyle(.borderedProminent)
+                    .tint(testButtonColor)
+                    .disabled(testState == .testing)
 
                     if case .failure(let message) = testState {
                         Text(message)
@@ -438,13 +427,10 @@ struct SetupStep4_APIKey: View {
                     }
 
                     if case .success = testState {
-                        Text("API key is valid and ready to go.")
+                        Text("Server is reachable and ready to generate your plan.")
                             .font(.caption)
                             .foregroundStyle(.green)
                     }
-
-                    Link("Get a free API key →", destination: URL(string: "https://aistudio.google.com/apikey")!)
-                        .font(.subheadline)
                 }
                 .cardStyle()
 
@@ -453,9 +439,9 @@ struct SetupStep4_APIKey: View {
                         .font(.headline)
 
                     Text("• Generates your initial workout plan based on your profile")
+                    Text("• Backed by evidence-based fitness research (RAG)")
                     Text("• Suggests exercise swaps when needed")
                     Text("• Adapts future workouts based on your performance")
-                    Text("• Your key is stored securely in Keychain")
                 }
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
@@ -472,9 +458,6 @@ struct SetupStep4_APIKey: View {
             }
             .padding()
         }
-        .onChange(of: viewModel.geminiAPIKey) { _, _ in
-            testState = .idle
-        }
     }
 
     private var testButtonColor: Color {
@@ -486,15 +469,22 @@ struct SetupStep4_APIKey: View {
         }
     }
 
-    private func testKey() {
-        let key = viewModel.geminiAPIKey.trimmingCharacters(in: .whitespaces)
-        guard !key.isEmpty else { return }
-
+    private func testGateway() {
         testState = .testing
         Task {
             do {
-                _ = try await GeminiService.shared.testConnection(apiKey: key)
-                testState = .success
+                // Send a tiny test prompt to verify the gateway is reachable
+                let gateway = GatewayWorkoutService.shared
+                let response = try await gateway.generateWorkoutJSON(
+                    prompt: "Reply with just the word OK. No JSON, no other text.",
+                    timeout: 15.0
+                )
+                if response.contains("OK") {
+                    testState = .success
+                    viewModel.gatewayConnected = true
+                } else {
+                    testState = .failure("Unexpected server response. Try again.")
+                }
             } catch {
                 testState = .failure(error.localizedDescription)
             }

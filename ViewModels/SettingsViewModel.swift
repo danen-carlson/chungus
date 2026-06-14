@@ -7,9 +7,6 @@ import Observation
 final class SettingsViewModel {
 
     var profile: UserProfile?
-    var apiKeyMasked: String = ""
-    var showAPIKey = false
-    var newAPIKey: String = ""
     var isSaving = false
     var saveMessage: String?
 
@@ -36,13 +33,6 @@ final class SettingsViewModel {
             editEquipmentAccess = profile.equipmentAccess
             editAdditionalNotes = profile.additionalNotes
         }
-
-        // Mask API key
-        if let key = KeychainService.geminiAPIKey, key.count > 8 {
-            apiKeyMasked = String(key.prefix(4)) + "••••" + String(key.suffix(4))
-        } else {
-            apiKeyMasked = "Not set"
-        }
     }
 
     func saveProfile(context: ModelContext) {
@@ -65,24 +55,5 @@ final class SettingsViewModel {
         }
 
         isSaving = false
-    }
-
-    func saveAPIKey() {
-        let trimmed = newAPIKey.trimmingCharacters(in: .whitespaces)
-        guard !trimmed.isEmpty else { return }
-
-        KeychainService.geminiAPIKey = trimmed
-        newAPIKey = ""
-
-        if trimmed.count > 8 {
-            apiKeyMasked = String(trimmed.prefix(4)) + "••••" + String(trimmed.suffix(4))
-        }
-        saveMessage = "API key updated!"
-    }
-
-    func deleteAPIKey() {
-        KeychainService.geminiAPIKey = nil
-        apiKeyMasked = "Not set"
-        saveMessage = "API key removed."
     }
 }

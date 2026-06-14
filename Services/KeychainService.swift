@@ -1,29 +1,10 @@
 import Foundation
 import Security
 
-/// Secure storage for the Gemini API key using iOS Keychain
+/// Secure storage using iOS Keychain.
+/// Currently reserved for future auth tokens (e.g., Gateway session tokens).
+/// The app uses server-side RAG via the OpenClaw Gateway — no client-side API keys needed.
 enum KeychainService {
-
-    private enum Keys {
-        static let geminiAPIKey = "com.chungus.geminiAPIKey"
-    }
-
-    // MARK: - Gemini API Key
-
-    static var geminiAPIKey: String? {
-        get { read(key: Keys.geminiAPIKey) }
-        set {
-            if let value = newValue {
-                save(key: Keys.geminiAPIKey, value: value)
-            } else {
-                delete(key: Keys.geminiAPIKey)
-            }
-        }
-    }
-
-    static var hasGeminiKey: Bool {
-        geminiAPIKey != nil && !geminiAPIKey!.isEmpty
-    }
 
     // MARK: - Generic Keychain Operations
 

@@ -8,6 +8,11 @@ options:
   generateEmptyDirectories: true
   groupSortPosition: top
 
+packages:
+  Starscream:
+    url: https://github.com/daltoniam/Starscream.git
+    from: 4.0.8
+
 settings:
   base:
     SWIFT_VERSION: "6.2"
@@ -48,6 +53,7 @@ targets:
     dependencies:
       - target: ChungusWatch
         embed: true
+      - package: Starscream
 
   ChungusWatch:
     type: application
