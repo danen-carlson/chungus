@@ -28,6 +28,9 @@ struct WorkoutGenerator {
         let restSeconds: Int
         let tips: String?
         let alternatives: [String]?
+        let imageUrl: String?
+        let exerciseId: String?
+        let dbName: String?
     }
 
     struct ExerciseSwap: Decodable {
@@ -39,6 +42,9 @@ struct WorkoutGenerator {
         let restSeconds: Int
         let tips: String?
         let reason: String
+        let imageUrl: String?
+        let exerciseId: String?
+        let dbName: String?
     }
 
     // MARK: - Initial Plan Generation

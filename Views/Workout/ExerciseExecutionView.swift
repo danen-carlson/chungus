@@ -35,6 +35,26 @@ struct ExerciseExecutionView: View {
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
 
+                    // Exercise image
+                    if let imageUrl = exercise.imageUrl, let url = URL(string: imageUrl) {
+                        AsyncImage(url: url) { phase in
+                            switch phase {
+                            case .success(let image):
+                                image
+                                    .resizable()
+                                    .scaledToFit()
+                                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                            case .failure:
+                                EmptyView()
+                            case .empty:
+                                ProgressView()
+                                    .frame(maxWidth: .infinity, minHeight: 100)
+                            @unknown default:
+                                EmptyView()
+                            }
+                        }
+                    }
+
                     // Tips
                     if let tips = exercise.tips, !tips.isEmpty {
                         VStack(alignment: .leading, spacing: 4) {

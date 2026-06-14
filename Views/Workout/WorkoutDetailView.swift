@@ -16,6 +16,9 @@ struct WorkoutDetailView: View {
     @State private var showSwapSheet = false
     @State private var swapError: String?
 
+    // Image preview
+    @State private var previewImage: (url: String, name: String)?
+
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
@@ -55,7 +58,12 @@ struct WorkoutDetailView: View {
                         exercise: exercise,
                         index: index + 1,
                         isSwapping: swappingExercise?.id == exercise.id && isSwapping,
-                        onSwap: { swapExercise(exercise) }
+                        onSwap: { swapExercise(exercise) },
+                        onImageTap: {
+                            if let url = exercise.imageUrl {
+                                previewImage = (url, exercise.name)
+                            }
+                        }
                     )
                 }
             }
@@ -93,6 +101,12 @@ struct WorkoutDetailView: View {
                 .presentationDetents([.medium])
             }
         }
+        .fullScreenCover(item: Binding(
+            get: { previewImage.map { IdentifiedPreview(url: $0.url, name: $0.name) } },
+            set: { previewImage = $0.map { ($0.url, $0.name) } }
+        )) { preview in
+            ExerciseImagePreview(url: preview.url, name: preview.name)
+        }
         .alert("Swap Failed", isPresented: Binding(
             get: { swapError != nil },
             set: { if !$0 { swapError = nil } }
@@ -116,7 +130,6 @@ struct WorkoutDetailView: View {
 
         Task {
             do {
-                // Fetch the user profile for context
                 var descriptor = FetchDescriptor<UserProfile>(
                     sortBy: [SortDescriptor(\.createdAt, order: .reverse)]
                 )
@@ -156,6 +169,13 @@ struct WorkoutDetailView: View {
         exercise.repRange = suggestion.repRange
         exercise.tips = suggestion.tips
 
+        // Resolve image URL for the swap
+        if let imageUrl = suggestion.imageUrl {
+            exercise.imageUrl = imageUrl.hasPrefix("http") ? imageUrl : "https://fitness.hankbot.online\(imageUrl)"
+        } else {
+            exercise.imageUrl = nil
+        }
+
         try? modelContext.save()
 
         showSwapSheet = false
@@ -170,6 +190,61 @@ struct WorkoutDetailView: View {
     }
 }
 
+// MARK: - Preview Helper
+
+struct IdentifiedPreview: Identifiable {
+    let id = UUID()
+    let url: String
+    let name: String
+}
+
+// MARK: - Exercise Image Preview
+
+struct ExerciseImagePreview: View {
+    let url: String
+    let name: String
+    @Environment(\.dismiss) private var dismiss
+
+    var body: some View {
+        NavigationStack {
+            ZStack {
+                Color.black.ignoresSafeArea()
+
+                AsyncImage(url: URL(string: url)) { phase in
+                    switch phase {
+                    case .success(let image):
+                        image
+                            .resizable()
+                            .scaledToFit()
+                    case .failure:
+                        VStack(spacing: 12) {
+                            Image(systemName: "photo")
+                                .font(.system(size: 48))
+                                .foregroundStyle(.white.opacity(0.5))
+                            Text("Image unavailable")
+                                .foregroundStyle(.white.opacity(0.5))
+                        }
+                    case .empty:
+                        ProgressView()
+                            .tint(.white)
+                    @unknown default:
+                        EmptyView()
+                    }
+                }
+            }
+            .navigationTitle(name)
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbarColorScheme(.dark, for: .navigationBar)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("Done") { dismiss() }
+                        .foregroundStyle(.white)
+                }
+            }
+        }
+    }
+}
+
 // MARK: - Exercise Row
 
 struct ExerciseRow: View {
@@ -177,16 +252,48 @@ struct ExerciseRow: View {
     let index: Int
     var isSwapping: Bool = false
     let onSwap: () -> Void
+    var onImageTap: (() -> Void)?
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            HStack(alignment: .top) {
-                Text("\(index)")
-                    .font(.caption.bold())
-                    .frame(width: 24, height: 24)
-                    .background(Color.orange)
-                    .foregroundStyle(.white)
-                    .clipShape(Circle())
+            HStack(alignment: .top, spacing: 12) {
+                // Exercise image thumbnail
+                if let imageUrl = exercise.imageUrl, let url = URL(string: imageUrl) {
+                    Button {
+                        onImageTap?()
+                    } label: {
+                        AsyncImage(url: url) { phase in
+                            switch phase {
+                            case .success(let image):
+                                image
+                                    .resizable()
+                                    .scaledToFill()
+                            case .failure:
+                                Image(systemName: "figure.strengthtraining.traditional")
+                                    .font(.title2)
+                                    .foregroundStyle(.orange)
+                                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                                    .background(Color.orange.opacity(0.1))
+                            case .empty:
+                                ProgressView()
+                                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                            @unknown default:
+                                EmptyView()
+                            }
+                        }
+                        .frame(width: 60, height: 60)
+                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                    }
+                    .buttonStyle(.plain)
+                } else {
+                    // No image — show number badge
+                    Text("\(index)")
+                        .font(.caption.bold())
+                        .frame(width: 60, height: 60)
+                        .background(Color.orange)
+                        .foregroundStyle(.white)
+                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                }
 
                 VStack(alignment: .leading, spacing: 2) {
                     Text(exercise.name)
@@ -225,7 +332,7 @@ struct ExerciseRow: View {
                 Text(tips)
                     .font(.caption)
                     .foregroundStyle(.secondary)
-                    .padding(.leading, 32)
+                    .padding(.leading, 72)
             }
         }
         .cardStyle()

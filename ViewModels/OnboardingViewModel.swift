@@ -120,6 +120,12 @@ final class OnboardingViewModel {
                 print("[Chungus]   Workout \(index + 1): \(genWorkout.name) (\(genWorkout.exercises.count) exercises)")
 
                 for (exIndex, genEx) in genWorkout.exercises.enumerated() {
+                    // Resolve relative image URL to full URL
+                    let resolvedImageUrl = genEx.imageUrl.map { url -> String in
+                        if url.hasPrefix("http") { return url }
+                        return "https://fitness.hankbot.online\(url)"
+                    }
+                    
                     let exercise = ExerciseTemplate(
                         name: genEx.name,
                         muscleGroup: genEx.muscleGroup,
@@ -128,6 +134,7 @@ final class OnboardingViewModel {
                         targetWeightLbs: genEx.targetWeightLbs,
                         restSeconds: genEx.restSeconds,
                         tips: genEx.tips,
+                        imageUrl: resolvedImageUrl,
                         alternatives: genEx.alternatives ?? [],
                         order: exIndex
                     )
