@@ -66,7 +66,7 @@ struct WorkoutGenerator {
         for attempt in 1...3 {
             do {
                 print("[Chungus] Plan generation attempt \(attempt)/3 via Gateway...")
-                let rawJSON = try await gateway.generateWorkoutJSON(prompt: prompt, timeout: 45.0)
+                let rawJSON = try await gateway.generateWorkoutJSON(prompt: prompt, timeout: 120.0)
                 
                 guard let jsonData = rawJSON.data(using: .utf8) else {
                     throw NSError(domain: "WorkoutGenerator", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to encode response to UTF-8"])
@@ -115,7 +115,7 @@ struct WorkoutGenerator {
         Return the same JSON format as a single workout.
         """
 
-        let rawJSON = try await gateway.generateWorkoutJSON(prompt: prompt, timeout: 45.0)
+        let rawJSON = try await gateway.generateWorkoutJSON(prompt: prompt, timeout: 120.0)
         guard let jsonData = rawJSON.data(using: .utf8) else {
             throw NSError(domain: "WorkoutGenerator", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to encode response to UTF-8"])
         }
@@ -164,7 +164,7 @@ struct WorkoutGenerator {
         }
         """
 
-        let rawJSON = try await gateway.generateWorkoutJSON(prompt: prompt, timeout: 30.0)
+        let rawJSON = try await gateway.generateWorkoutJSON(prompt: prompt, timeout: 60.0)
         guard let jsonData = rawJSON.data(using: .utf8) else {
             throw NSError(domain: "WorkoutGenerator", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to encode response to UTF-8"])
         }

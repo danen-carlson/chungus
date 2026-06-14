@@ -32,7 +32,7 @@ final class GatewayWorkoutService: Sendable {
     }
 
     /// Sends a prompt to the fitness API and returns the raw text response
-    func generateWorkoutJSON(prompt: String, timeout: TimeInterval = 60.0) async throws -> String {
+    func generateWorkoutJSON(prompt: String, timeout: TimeInterval = 120.0) async throws -> String {
         let url = URL(string: "\(baseURL)/generate")!
 
         let body: [String: Any] = ["prompt": prompt]
