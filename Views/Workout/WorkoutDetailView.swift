@@ -8,7 +8,13 @@ struct WorkoutDetailView: View {
 
     @State private var showExerciseExecution = false
     @State private var workoutVM = WorkoutViewModel()
-    @State private var swappingExerciseId: UUID?
+
+    // Swap state
+    @State private var swappingExercise: ExerciseTemplate?
+    @State private var isSwapping = false
+    @State private var swapSuggestion: WorkoutGenerator.ExerciseSwap?
+    @State private var showSwapSheet = false
+    @State private var swapError: String?
 
     var body: some View {
         ScrollView {
@@ -48,6 +54,7 @@ struct WorkoutDetailView: View {
                     ExerciseRow(
                         exercise: exercise,
                         index: index + 1,
+                        isSwapping: swappingExercise?.id == exercise.id && isSwapping,
                         onSwap: { swapExercise(exercise) }
                     )
                 }
@@ -76,6 +83,24 @@ struct WorkoutDetailView: View {
                     .environment(\.modelContext, modelContext)
             }
         }
+        .sheet(isPresented: $showSwapSheet) {
+            if let suggestion = swapSuggestion {
+                SwapSuggestionView(
+                    suggestion: suggestion,
+                    onAccept: { acceptSwap() },
+                    onReject: { rejectSwap() }
+                )
+                .presentationDetents([.medium])
+            }
+        }
+        .alert("Swap Failed", isPresented: Binding(
+            get: { swapError != nil },
+            set: { if !$0 { swapError = nil } }
+        )) {
+            Button("OK") { swapError = nil }
+        } message: {
+            Text(swapError ?? "Unknown error")
+        }
     }
 
     private func startWorkout() {
@@ -84,8 +109,64 @@ struct WorkoutDetailView: View {
     }
 
     private func swapExercise(_ exercise: ExerciseTemplate) {
-        // TODO: Present swap UI
-        swappingExerciseId = exercise.id
+        guard !isSwapping else { return }
+        swappingExercise = exercise
+        isSwapping = true
+        swapError = nil
+
+        Task {
+            do {
+                // Fetch the user profile for context
+                var descriptor = FetchDescriptor<UserProfile>(
+                    sortBy: [SortDescriptor(\.createdAt, order: .reverse)]
+                )
+                descriptor.fetchLimit = 1
+                let profile = try? modelContext.fetch(descriptor).first
+                let profileSummary = profile?.promptSummary ?? "Adult, hypertrophy goal"
+                let equipmentAccess = profile?.equipmentAccess ?? "Full Gym"
+
+                let generator = WorkoutGenerator()
+                let suggestion = try await generator.suggestSwap(
+                    exerciseName: exercise.name,
+                    muscleGroup: exercise.muscleGroup,
+                    exerciseSets: exercise.sets,
+                    exerciseRepRange: exercise.repRange,
+                    exerciseRestSeconds: exercise.restSeconds,
+                    workoutName: template.name,
+                    targetMuscles: template.targetMuscles,
+                    profileSummary: profileSummary,
+                    equipmentAccess: equipmentAccess
+                )
+                swapSuggestion = suggestion
+                showSwapSheet = true
+            } catch {
+                swapError = error.localizedDescription
+            }
+            isSwapping = false
+        }
+    }
+
+    private func acceptSwap() {
+        guard let suggestion = swapSuggestion,
+              let exercise = swappingExercise else { return }
+
+        exercise.name = suggestion.name
+        exercise.muscleGroup = suggestion.muscleGroup
+        exercise.sets = suggestion.sets
+        exercise.repRange = suggestion.repRange
+        exercise.tips = suggestion.tips
+
+        try? modelContext.save()
+
+        showSwapSheet = false
+        swapSuggestion = nil
+        swappingExercise = nil
+    }
+
+    private func rejectSwap() {
+        showSwapSheet = false
+        swapSuggestion = nil
+        swappingExercise = nil
     }
 }
 
@@ -94,6 +175,7 @@ struct WorkoutDetailView: View {
 struct ExerciseRow: View {
     let exercise: ExerciseTemplate
     let index: Int
+    var isSwapping: Bool = false
     let onSwap: () -> Void
 
     var body: some View {
@@ -125,11 +207,17 @@ struct ExerciseRow: View {
 
                 Spacer()
 
-                Menu {
-                    Button("Swap Exercise", systemImage: "arrow.triangle.2.circlepath", action: onSwap)
-                } label: {
-                    Image(systemName: "ellipsis")
+                if isSwapping {
+                    ProgressView()
+                        .controlSize(.small)
                         .padding(8)
+                } else {
+                    Menu {
+                        Button("Swap Exercise", systemImage: "arrow.triangle.2.circlepath", action: onSwap)
+                    } label: {
+                        Image(systemName: "ellipsis")
+                            .padding(8)
+                    }
                 }
             }
 
