@@ -1,21 +1,13 @@
 import Foundation
-import Starscream
 
-/// Handles communication with the OpenClaw Gateway for workout generation.
-/// Replaces direct Gemini API calls with server-side RAG + Venice AI.
-final class GatewayWorkoutService: @unchecked Sendable {
+/// Handles communication with the Chungus fitness API server.
+/// The server holds the Venice AI key and RAG knowledge server-side,
+/// so the app just sends a prompt and gets back structured JSON.
+final class GatewayWorkoutService: Sendable {
 
     static let shared = GatewayWorkoutService()
 
-    private let gatewayURL = "wss://gateway.hankbot.online"
-    private let sessionKey = "chungus:workout"
-
-    // Lock-protected mutable state for Swift 6 strict concurrency
-    private let lock = NSLock()
-    private var socket: WebSocket?
-    private var continuation: CheckedContinuation<String, Error>?
-    private var accumulatedText = ""
-    private var pendingPrompt = ""
+    private let baseURL = "https://fitness.hankbot.online"
 
     private init() {}
 
@@ -23,6 +15,7 @@ final class GatewayWorkoutService: @unchecked Sendable {
         case connectionFailed(String)
         case timeout
         case invalidResponse
+        case serverError(String)
 
         var errorDescription: String? {
             switch self {
@@ -32,152 +25,72 @@ final class GatewayWorkoutService: @unchecked Sendable {
                 return "The server took too long to respond. Please try again."
             case .invalidResponse:
                 return "Received an invalid response from the server."
+            case .serverError(let msg):
+                return "Server error: \(msg)"
             }
         }
     }
 
-    /// Sends a prompt to the Gateway and returns the raw text response
-    func generateWorkoutJSON(prompt: String, timeout: TimeInterval = 45.0) async throws -> String {
-        let systemPrompt = "You are an expert fitness coach. Return ONLY valid JSON, no markdown, no explanations outside the JSON. " + prompt
+    /// Sends a prompt to the fitness API and returns the raw text response
+    func generateWorkoutJSON(prompt: String, timeout: TimeInterval = 60.0) async throws -> String {
+        let url = URL(string: "\(baseURL)/generate")!
 
-        return try await withCheckedThrowingContinuation { (cont: CheckedContinuation<String, Error>) in
-            self.lock.lock()
-            self.accumulatedText = ""
-            self.pendingPrompt = systemPrompt
-            self.continuation = cont
-            self.lock.unlock()
+        let body: [String: Any] = ["prompt": prompt]
+        let jsonData = try JSONSerialization.data(withJSONObject: body)
 
-            var request = URLRequest(url: URL(string: self.gatewayURL)!)
-            request.timeoutInterval = 10
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpBody = jsonData
+        request.timeoutInterval = timeout
 
-            let ws = WebSocket(request: request)
-            ws.delegate = self
-
-            self.lock.lock()
-            self.socket = ws
-            self.lock.unlock()
-
-            ws.connect()
-
-            // Timeout handler
-            Task { [weak self] in
-                try? await Task.sleep(for: .seconds(timeout))
-                self?.handleTimeout()
+        let (data, response): (Data, URLResponse)
+        do {
+            let session = URLSession(configuration: .default)
+            (data, response) = try await session.data(for: request)
+        } catch {
+            if (error as NSError).code == NSURLErrorTimedOut {
+                throw GatewayError.timeout
             }
-        }
-    }
-
-    // MARK: - Internal State Management (lock-protected)
-
-    private func handleTimeout() {
-        lock.lock()
-        let cont = continuation
-        continuation = nil
-        let ws = socket
-        socket = nil
-        lock.unlock()
-
-        cont?.resume(throwing: GatewayError.timeout)
-        ws?.disconnect()
-    }
-
-    private func handleResponse() {
-        lock.lock()
-        let cont = continuation
-        continuation = nil
-        var cleaned = accumulatedText.trimmingCharacters(in: .whitespacesAndNewlines)
-        let ws = socket
-        socket = nil
-        lock.unlock()
-
-        // Strip markdown code fences
-        if cleaned.hasPrefix("```") {
-            if let firstNewline = cleaned.firstIndex(of: "\n") {
-                cleaned = String(cleaned[cleaned.index(after: firstNewline)...])
-            }
-            if cleaned.hasSuffix("```") {
-                cleaned = String(cleaned.dropLast(3))
-            }
-            cleaned = cleaned.trimmingCharacters(in: .whitespacesAndNewlines)
+            throw GatewayError.connectionFailed(error.localizedDescription)
         }
 
-        cont?.resume(returning: cleaned)
-        ws?.disconnect()
-    }
-
-    private func handleError(_ error: Error) {
-        lock.lock()
-        let cont = continuation
-        continuation = nil
-        let ws = socket
-        socket = nil
-        lock.unlock()
-
-        cont?.resume(throwing: GatewayError.connectionFailed(error.localizedDescription))
-        ws?.disconnect()
-    }
-}
-
-// MARK: - WebSocketDelegate
-
-extension GatewayWorkoutService: WebSocketDelegate {
-    nonisolated func didConnect(socket: WebSocketClient) {
-        lock.lock()
-        let prompt = pendingPrompt
-        let key = sessionKey
-        lock.unlock()
-
-        let payload: [String: Any] = [
-            "jsonrpc": "2.0",
-            "method": "chat.send",
-            "params": [
-                "sessionKey": key,
-                "message": prompt,
-                "idempotencyKey": UUID().uuidString
-            ] as [String: Any],
-            "id": 1
-        ]
-
-        if let data = try? JSONSerialization.data(withJSONObject: payload) {
-            socket.write(data: data)
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw GatewayError.invalidResponse
         }
+
+        guard httpResponse.statusCode == 200 else {
+            let errorBody = String(data: data, encoding: .utf8) ?? "Unknown error"
+            throw GatewayError.serverError("HTTP \(httpResponse.statusCode): \(errorBody.prefix(200))")
+        }
+
+        // Parse the wrapper response: {"result": "..."}
+        guard let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+              let result = json["result"] as? String else {
+            throw GatewayError.invalidResponse
+        }
+
+        return result
     }
 
-    nonisolated func didReceive(event: WebSocketEvent, client: WebSocketClient) {
-        switch event {
-        case .connected:
-            break // Handled in didConnect
-        case .text(let text):
-            lock.lock()
-            accumulatedText += text
-            let current = accumulatedText
-            lock.unlock()
+    /// Quick health check — returns true if the server is reachable
+    func healthCheck() async throws -> Bool {
+        let url = URL(string: "\(baseURL)/health")!
+        var request = URLRequest(url: url)
+        request.timeoutInterval = 10
 
-            // Heuristic: valid JSON ending
-            if current.trimmingCharacters(in: .whitespacesAndNewlines).hasSuffix("}") {
-                handleResponse()
-            }
-        case .binary:
-            break
-        case .disconnected(let reason, let code):
-            print("[GatewayWorkout] Disconnected: \(reason), code: \(code)")
-            lock.lock()
-            let hasCont = continuation != nil
-            let finalText = accumulatedText
-            lock.unlock()
+        let (data, response) = try await URLSession.shared.data(for: request)
 
-            if hasCont && !finalText.isEmpty {
-                handleResponse()
-            } else if hasCont {
-                handleError(GatewayError.connectionFailed("Disconnected: \(reason)"))
-            }
-        case .error(let error):
-            print("[GatewayWorkout] Error: \(error?.localizedDescription ?? "Unknown")")
-            handleError(error ?? GatewayError.connectionFailed("Unknown WebSocket error"))
-        case .ping, .pong, .viabilityChanged, .reconnectSuggested, .cancelled, .peerClosed:
-            break
-        @unknown default:
-            break
+        guard let httpResponse = response as? HTTPURLResponse,
+              httpResponse.statusCode == 200 else {
+            throw GatewayError.connectionFailed("Server returned non-200 status")
         }
+
+        guard let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+              json["status"] as? String == "ok" else {
+            throw GatewayError.invalidResponse
+        }
+
+        return true
     }
 }

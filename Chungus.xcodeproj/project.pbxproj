@@ -10,7 +10,6 @@
 		00BDC7ED09EF5EA8049DB789 /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C639A1FDCFBDEAF7E655690 /* DashboardView.swift */; };
 		060272AF76EE74283601B5C7 /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86FD0405BAA931AF8C8873ED /* SettingsViewModel.swift */; };
 		0A1D24597999BEB1D7D4FE0D /* OnboardingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02BA1296340F311AF0A170C /* OnboardingViewModel.swift */; };
-		11B4AB667CBE45483DCBBA4B /* Starscream in Frameworks */ = {isa = PBXBuildFile; productRef = 7519543526C9EF6F99C9EEBB /* Starscream */; };
 		179366D134FA53AF68D74464 /* WorkoutPlan.swift in Sources */ = {isa = PBXBuildFile; fileRef = 287275F58D61BAB6E85FB7F7 /* WorkoutPlan.swift */; };
 		1BC64D1280C24161CF6F5E0A /* WorkoutTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC27368218DFCF92ECE5C3C3 /* WorkoutTemplate.swift */; };
 		1E784E42A2BC926FCE16D99D /* WorkoutGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EA789C2A3F6C8525D2DA4DD /* WorkoutGenerator.swift */; };
@@ -79,7 +78,7 @@
 		41877372EA683A28ED2A100A /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		4198F855DC3F9809A973407B /* WorkoutViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutViewModel.swift; sourceTree = "<group>"; };
 		5A4E2290505C705D482606F9 /* SetRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetRecord.swift; sourceTree = "<group>"; };
-		6A0C77F136B7F8007D77EE9A /* Chungus.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Chungus.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		6A0C77F136B7F8007D77EE9A /* Chungus.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Chungus.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6A19B5D1D52898881D7D6AA2 /* WorkoutDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutDetailView.swift; sourceTree = "<group>"; };
 		76DD8C61BBEB1C41BA6DC7F1 /* ExerciseExecutionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseExecutionView.swift; sourceTree = "<group>"; };
 		86FD0405BAA931AF8C8873ED /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
@@ -103,17 +102,6 @@
 		F7CA9813FA2A2364222B9C5A /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		FCA58E23348A015469870BDB /* ExerciseTemplate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseTemplate.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
-
-/* Begin PBXFrameworksBuildPhase section */
-		1A0B7B3B001F25CF5E9266B0 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				11B4AB667CBE45483DCBBA4B /* Starscream in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
 		11BE31FFA971AABDA65F3D3C /* History */ = {
@@ -310,7 +298,6 @@
 			buildPhases = (
 				B5655EE0C42669263869800B /* Sources */,
 				60F852E6540A8B9FDC836826 /* Resources */,
-				1A0B7B3B001F25CF5E9266B0 /* Frameworks */,
 				9A5075F0A40927D8D75874C2 /* Embed Watch Content */,
 			);
 			buildRules = (
@@ -320,7 +307,6 @@
 			);
 			name = Chungus;
 			packageProductDependencies = (
-				7519543526C9EF6F99C9EEBB /* Starscream */,
 			);
 			productName = Chungus;
 			productReference = 6A0C77F136B7F8007D77EE9A /* Chungus.app */;
@@ -333,13 +319,14 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
-				LastUpgradeCheck = 2700;
+				LastUpgradeCheck = 2600;
 				TargetAttributes = {
 					BA1288E4348C4AA45F161A4F = {
 						DevelopmentTeam = AQQ8UWSCZC;
 						ProvisioningStyle = Automatic;
 					};
 					CD5FDDDD9EC5514543C1488B = {
+						DevelopmentTeam = AQQ8UWSCZC;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -353,9 +340,6 @@
 			);
 			mainGroup = 87FEA1DF6AAD897D1CBCC736;
 			minimizedProjectReferenceProxies = 1;
-			packageReferences = (
-				E98D195F9F95B7604518ABA4 /* XCRemoteSwiftPackageReference "Starscream" */,
-			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = E9441AB8CB0B01D012AD578D /* Products */;
 			projectDirPath = "";
@@ -439,7 +423,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -471,12 +454,10 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = AQQ8UWSCZC;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -496,7 +477,6 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 6.2;
@@ -525,7 +505,6 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Chungus.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				DEVELOPMENT_TEAM = AQQ8UWSCZC;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = Chungus;
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "Chungus reads your workout history to track your progress.";
@@ -567,7 +546,6 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Chungus.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				DEVELOPMENT_TEAM = AQQ8UWSCZC;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = Chungus;
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "Chungus reads your workout history to track your progress.";
@@ -592,7 +570,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -624,12 +601,10 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = AQQ8UWSCZC;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -642,7 +617,6 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_VERSION = 6.2;
@@ -681,25 +655,6 @@
 			defaultConfigurationName = Debug;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		E98D195F9F95B7604518ABA4 /* XCRemoteSwiftPackageReference "Starscream" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/daltoniam/Starscream.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 4.0.8;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		7519543526C9EF6F99C9EEBB /* Starscream */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = E98D195F9F95B7604518ABA4 /* XCRemoteSwiftPackageReference "Starscream" */;
-			productName = Starscream;
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 86ABAD417E547CC864996228 /* Project object */;
 }

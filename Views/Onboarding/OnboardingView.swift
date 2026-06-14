@@ -473,18 +473,9 @@ struct SetupStep4_Gateway: View {
         testState = .testing
         Task {
             do {
-                // Send a tiny test prompt to verify the gateway is reachable
-                let gateway = GatewayWorkoutService.shared
-                let response = try await gateway.generateWorkoutJSON(
-                    prompt: "Reply with just the word OK. No JSON, no other text.",
-                    timeout: 15.0
-                )
-                if response.contains("OK") {
-                    testState = .success
-                    viewModel.gatewayConnected = true
-                } else {
-                    testState = .failure("Unexpected server response. Try again.")
-                }
+                _ = try await GatewayWorkoutService.shared.healthCheck()
+                testState = .success
+                viewModel.gatewayConnected = true
             } catch {
                 testState = .failure(error.localizedDescription)
             }

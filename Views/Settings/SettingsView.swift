@@ -86,7 +86,7 @@ struct SettingsView: View {
                     HStack {
                         Text("Server")
                         Spacer()
-                        Text("gateway.hankbot.online")
+                        Text("fitness.hankbot.online")
                             .foregroundStyle(.secondary)
                             .font(.caption)
                     }
@@ -136,16 +136,8 @@ struct SettingsView: View {
         gatewayTestState = .testing
         Task {
             do {
-                let gateway = GatewayWorkoutService.shared
-                let response = try await gateway.generateWorkoutJSON(
-                    prompt: "Reply with just the word OK. No JSON, no other text.",
-                    timeout: 15.0
-                )
-                if response.contains("OK") {
-                    gatewayTestState = .success
-                } else {
-                    gatewayTestState = .failure("Unexpected server response.")
-                }
+                _ = try await GatewayWorkoutService.shared.healthCheck()
+                gatewayTestState = .success
             } catch {
                 gatewayTestState = .failure(error.localizedDescription)
             }
