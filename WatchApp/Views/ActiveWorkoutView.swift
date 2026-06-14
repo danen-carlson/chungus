@@ -116,7 +116,9 @@ struct ActiveWorkoutView: View {
 
     private func startTimer() {
         restTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
-            viewModel.tick()
+            Task { @MainActor in
+                viewModel.tick()
+            }
         }
     }
 }

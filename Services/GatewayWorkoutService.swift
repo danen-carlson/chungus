@@ -3,78 +3,94 @@ import Starscream
 
 /// Handles communication with the OpenClaw Gateway for workout generation.
 /// Replaces direct Gemini API calls with server-side RAG + Venice AI.
-actor GatewayWorkoutService {
+final class GatewayWorkoutService: @unchecked Sendable {
 
     static let shared = GatewayWorkoutService()
 
-    // Default to your production Gateway. Can be overridden for local testing.
     private let gatewayURL = "wss://gateway.hankbot.online"
-    private let sessionKey = "chungus:workout" // Dedicated session for workout generation
-    
+    private let sessionKey = "chungus:workout"
+
+    // Lock-protected mutable state for Swift 6 strict concurrency
+    private let lock = NSLock()
     private var socket: WebSocket?
     private var continuation: CheckedContinuation<String, Error>?
     private var accumulatedText = ""
-    private var currentPrompt = ""
+    private var pendingPrompt = ""
 
     private init() {}
 
     enum GatewayError: LocalizedError {
-        case connectionFailed
+        case connectionFailed(String)
         case timeout
         case invalidResponse
-        case serverError(String)
 
         var errorDescription: String? {
             switch self {
-            case .connectionFailed:
-                return "Failed to connect to the fitness server. Please check your internet connection."
+            case .connectionFailed(let msg):
+                return "Failed to connect to the fitness server: \(msg). Check your internet connection."
             case .timeout:
                 return "The server took too long to respond. Please try again."
             case .invalidResponse:
                 return "Received an invalid response from the server."
-            case .serverError(let msg):
-                return "Server error: \(msg)"
             }
         }
     }
 
     /// Sends a prompt to the Gateway and returns the raw text response
     func generateWorkoutJSON(prompt: String, timeout: TimeInterval = 45.0) async throws -> String {
-        currentPrompt = "You are an expert fitness coach. Return ONLY valid JSON, no markdown, no explanations outside the JSON. " + prompt
-        accumulatedText = ""
-        
-        return try await withCheckedThrowingContinuation { continuation in
-            self.continuation = continuation
-            
-            var request = URLRequest(url: URL(string: gatewayURL)!)
-            request.timeoutInterval = 5
-            
-            let socket = WebSocket(request: request)
-            socket.delegate = self
-            self.socket = socket
-            
-            socket.connect()
-            
+        let systemPrompt = "You are an expert fitness coach. Return ONLY valid JSON, no markdown, no explanations outside the JSON. " + prompt
+
+        return try await withCheckedThrowingContinuation { (cont: CheckedContinuation<String, Error>) in
+            self.lock.lock()
+            self.accumulatedText = ""
+            self.pendingPrompt = systemPrompt
+            self.continuation = cont
+            self.lock.unlock()
+
+            var request = URLRequest(url: URL(string: self.gatewayURL)!)
+            request.timeoutInterval = 10
+
+            let ws = WebSocket(request: request)
+            ws.delegate = self
+
+            self.lock.lock()
+            self.socket = ws
+            self.lock.unlock()
+
+            ws.connect()
+
             // Timeout handler
-            Task {
+            Task { [weak self] in
                 try? await Task.sleep(for: .seconds(timeout))
-                await self.handleTimeout()
+                self?.handleTimeout()
             }
         }
     }
 
+    // MARK: - Internal State Management (lock-protected)
+
     private func handleTimeout() {
-        guard let cont = continuation else { return }
-        self.continuation = nil
-        socket?.disconnect()
+        lock.lock()
+        let cont = continuation
+        continuation = nil
+        let ws = socket
         socket = nil
-        cont.resume(throwing: GatewayError.timeout)
+        lock.unlock()
+
+        cont?.resume(throwing: GatewayError.timeout)
+        ws?.disconnect()
     }
 
     private func handleResponse() {
-        guard let cont = continuation else { return }
-        
+        lock.lock()
+        let cont = continuation
+        continuation = nil
         var cleaned = accumulatedText.trimmingCharacters(in: .whitespacesAndNewlines)
+        let ws = socket
+        socket = nil
+        lock.unlock()
+
+        // Strip markdown code fences
         if cleaned.hasPrefix("```") {
             if let firstNewline = cleaned.firstIndex(of: "\n") {
                 cleaned = String(cleaned[cleaned.index(after: firstNewline)...])
@@ -84,19 +100,21 @@ actor GatewayWorkoutService {
             }
             cleaned = cleaned.trimmingCharacters(in: .whitespacesAndNewlines)
         }
-        
-        self.continuation = nil
-        socket?.disconnect()
-        socket = nil
-        cont.resume(returning: cleaned)
+
+        cont?.resume(returning: cleaned)
+        ws?.disconnect()
     }
 
     private func handleError(_ error: Error) {
-        guard let cont = continuation else { return }
-        self.continuation = nil
-        socket?.disconnect()
+        lock.lock()
+        let cont = continuation
+        continuation = nil
+        let ws = socket
         socket = nil
-        cont.resume(throwing: error)
+        lock.unlock()
+
+        cont?.resume(throwing: GatewayError.connectionFailed(error.localizedDescription))
+        ws?.disconnect()
     }
 }
 
@@ -104,69 +122,62 @@ actor GatewayWorkoutService {
 
 extension GatewayWorkoutService: WebSocketDelegate {
     nonisolated func didConnect(socket: WebSocketClient) {
-        Task { @MainActor in
-            let prompt = await self.currentPrompt
-            let rpcPayload: [String: Any] = [
-                "jsonrpc": "2.0",
-                "method": "chat.send",
-                "params": [
-                    "sessionKey": await self.sessionKey,
-                    "message": prompt,
-                    "idempotencyKey": UUID().uuidString
-                ],
-                "id": 1
-            ]
-            
-            if let data = try? JSONSerialization.data(withJSONObject: rpcPayload) {
-                socket.write(data: data)
-            }
+        lock.lock()
+        let prompt = pendingPrompt
+        let key = sessionKey
+        lock.unlock()
+
+        let payload: [String: Any] = [
+            "jsonrpc": "2.0",
+            "method": "chat.send",
+            "params": [
+                "sessionKey": key,
+                "message": prompt,
+                "idempotencyKey": UUID().uuidString
+            ] as [String: Any],
+            "id": 1
+        ]
+
+        if let data = try? JSONSerialization.data(withJSONObject: payload) {
+            socket.write(data: data)
         }
     }
 
     nonisolated func didReceive(event: WebSocketEvent, client: WebSocketClient) {
-        Task { @MainActor in
-            switch event {
-            case .connected:
-                break // Handled in didConnect
-            case .text(let text):
-                await self.appendText(text)
-                
-                // Heuristic: if we have a valid-looking JSON ending, resolve
-                let currentText = await self.getAccumulatedText()
-                if currentText.trimmingCharacters(in: .whitespacesAndNewlines).hasSuffix("}") {
-                    await self.handleResponse()
-                }
-            case .disconnected(let reason, let code):
-                print("[GatewayWorkout] Disconnected: \(reason), code: \(code)")
-                if await self.continuation != nil {
-                    let finalText = await self.getAccumulatedText()
-                    if !finalText.isEmpty {
-                        await self.setAccumulatedText(finalText)
-                        await self.handleResponse()
-                    } else {
-                        await self.handleError(GatewayError.connectionFailed)
-                    }
-                }
-            case .error(let error):
-                print("[GatewayWorkout] Error: \(error?.localizedDescription ?? "Unknown")")
-                await self.handleError(GatewayError.connectionFailed)
-            case .pong, .ping, .viabilityChanged, .reconnectSuggested, .cancelled, .peerClosed:
-                break
-            @unknown default:
-                break
+        switch event {
+        case .connected:
+            break // Handled in didConnect
+        case .text(let text):
+            lock.lock()
+            accumulatedText += text
+            let current = accumulatedText
+            lock.unlock()
+
+            // Heuristic: valid JSON ending
+            if current.trimmingCharacters(in: .whitespacesAndNewlines).hasSuffix("}") {
+                handleResponse()
             }
+        case .binary:
+            break
+        case .disconnected(let reason, let code):
+            print("[GatewayWorkout] Disconnected: \(reason), code: \(code)")
+            lock.lock()
+            let hasCont = continuation != nil
+            let finalText = accumulatedText
+            lock.unlock()
+
+            if hasCont && !finalText.isEmpty {
+                handleResponse()
+            } else if hasCont {
+                handleError(GatewayError.connectionFailed("Disconnected: \(reason)"))
+            }
+        case .error(let error):
+            print("[GatewayWorkout] Error: \(error?.localizedDescription ?? "Unknown")")
+            handleError(error ?? GatewayError.connectionFailed("Unknown WebSocket error"))
+        case .ping, .pong, .viabilityChanged, .reconnectSuggested, .cancelled, .peerClosed:
+            break
+        @unknown default:
+            break
         }
-    }
-    
-    private func appendText(_ text: String) {
-        accumulatedText += text
-    }
-    
-    private func getAccumulatedText() -> String {
-        return accumulatedText
-    }
-    
-    private func setAccumulatedText(_ text: String) {
-        accumulatedText = text
     }
 }
