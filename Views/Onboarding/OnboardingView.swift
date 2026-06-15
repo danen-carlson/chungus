@@ -139,10 +139,12 @@ struct GeneratingOverlay: View {
         }
         .onAppear {
             dotTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { _ in
-                if dots.count < 3 {
-                    dots += "."
-                } else {
-                    dots = ""
+                Task { @MainActor in
+                    if dots.count < 3 {
+                        dots += "."
+                    } else {
+                        dots = ""
+                    }
                 }
             }
         }

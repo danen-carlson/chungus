@@ -244,13 +244,17 @@ struct ExerciseExecutionView: View {
 
     private func startTimers() {
         workoutTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
-            if let start = viewModel.workoutStartTime {
-                viewModel.workoutElapsed = Date().timeIntervalSince(start)
+            Task { @MainActor in
+                if let start = viewModel.workoutStartTime {
+                    viewModel.workoutElapsed = Date().timeIntervalSince(start)
+                }
             }
         }
 
         restTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
-            viewModel.tickRestTimer()
+            Task { @MainActor in
+                viewModel.tickRestTimer()
+            }
         }
     }
 
