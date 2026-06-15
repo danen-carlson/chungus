@@ -15,7 +15,9 @@ struct ChungusApp: App {
             ExerciseTemplate.self,
             WorkoutSession.self,
             ExerciseSession.self,
-            SetRecord.self
+            SetRecord.self,
+            DailyHabit.self,
+            HabitCompletion.self
         ])
     }
 }
@@ -41,6 +43,11 @@ struct MainTabView: View {
             DashboardView()
                 .tabItem {
                     Label("Workouts", systemImage: "dumbbell.fill")
+                }
+
+            HabitsView()
+                .tabItem {
+                    Label("Habits", systemImage: "checkmark.circle.fill")
                 }
 
             HistoryView()
