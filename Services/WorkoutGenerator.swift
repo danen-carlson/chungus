@@ -188,8 +188,11 @@ struct WorkoutGenerator {
         workoutName: String,
         targetMuscles: [String],
         profileSummary: String,
-        equipmentAccess: String
+        equipmentAccess: String,
+        userNotes: String? = nil
     ) async throws -> ExerciseSwap {
+        let notesPrompt = userNotes != nil ? "\n\nUser's specific request for this swap: \(userNotes!)" : ""
+        
         let prompt = """
         You are an expert personal trainer. Suggest an alternative exercise.
 
@@ -197,10 +200,12 @@ struct WorkoutGenerator {
 
         Current exercise: \(exerciseName) (\(muscleGroup))
         Workout context: \(workoutName) targeting \(targetMuscles.joined(separator: ", "))
+        \(notesPrompt)
 
         Suggest ONE alternative exercise that:
         - Targets the same muscle group (\(muscleGroup))
         - Fits the user's equipment (\(equipmentAccess))
+        - Addresses the user's specific request if provided
         - Maintains similar difficulty level
         - Respects any injuries/limitations mentioned
         - CRITICAL: User has a history of bilateral shoulder dislocations (left shoulder recovering). NO behind-the-neck movements, deep dips, or heavy overhead barbell work.
@@ -214,7 +219,7 @@ struct WorkoutGenerator {
             "targetWeightLbs": null,
             "restSeconds": \(exerciseRestSeconds),
             "tips": "Brief form cue",
-            "reason": "Why this is a good swap"
+            "reason": "Why this is a good swap based on the user's request"
         }
         """
 

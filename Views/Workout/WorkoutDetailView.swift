@@ -14,6 +14,8 @@ struct WorkoutDetailView: View {
     @State private var isSwapping = false
     @State private var swapSuggestion: WorkoutGenerator.ExerciseSwap?
     @State private var showSwapSheet = false
+    @State private var showSwapNotesSheet = false
+    @State private var swapNotes: String = ""
     @State private var swapError: String?
 
     // Image preview
@@ -58,7 +60,7 @@ struct WorkoutDetailView: View {
                         exercise: exercise,
                         index: index + 1,
                         isSwapping: swappingExercise?.id == exercise.id && isSwapping,
-                        onSwap: { swapExercise(exercise) },
+                        initiateSwap: { initiateSwap(exercise) },
                         onImageTap: {
                             if let url = exercise.imageUrl {
                                 previewImage = (url, exercise.name)
@@ -107,6 +109,61 @@ struct WorkoutDetailView: View {
         )) { preview in
             ExerciseImagePreview(url: preview.url, name: preview.name)
         }
+        .sheet(isPresented: $showSwapNotesSheet) {
+            NavigationStack {
+                VStack(spacing: 16) {
+                    Text("Why are you swapping \(swappingExercise?.name ?? "this exercise")?")
+                        .font(.headline)
+                        .multilineTextAlignment(.center)
+
+                    Text("Optional: Tell the AI what you want differently (e.g., 'too hard on my lower back', 'want a machine instead', 'need a dumbbell alternative').")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal)
+
+                    TextEditor(text: $swapNotes)
+                        .frame(minHeight: 100)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 8)
+                                .stroke(Color(.systemGray4))
+                        )
+                        .padding(.horizontal)
+
+                    Spacer()
+
+                    Button {
+                        executeSwap()
+                    } label: {
+                        HStack {
+                            if isSwapping {
+                                ProgressView().tint(.white)
+                            }
+                            Text(isSwapping ? "Generating..." : "Find Alternative")
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(Color.orange)
+                        .foregroundStyle(.white)
+                        .clipShape(RoundedRectangle(cornerRadius: 10))
+                    }
+                    .disabled(isSwapping)
+                    .padding(.horizontal)
+                    .padding(.bottom)
+                }
+                .padding(.top)
+                .navigationTitle("Swap Exercise")
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .topBarLeading) {
+                        Button("Cancel") {
+                            showSwapNotesSheet = false
+                            swappingExercise = nil
+                        }
+                    }
+                }
+            }
+        }
         .alert("Swap Failed", isPresented: Binding(
             get: { swapError != nil },
             set: { if !$0 { swapError = nil } }
@@ -122,9 +179,14 @@ struct WorkoutDetailView: View {
         showExerciseExecution = true
     }
 
-    private func swapExercise(_ exercise: ExerciseTemplate) {
-        guard !isSwapping else { return }
+    private func initiateSwap(_ exercise: ExerciseTemplate) {
         swappingExercise = exercise
+        swapNotes = ""
+        showSwapNotesSheet = true
+    }
+
+    private func executeSwap() {
+        showSwapNotesSheet = false
         isSwapping = true
         swapError = nil
 
@@ -140,15 +202,16 @@ struct WorkoutDetailView: View {
 
                 let generator = WorkoutGenerator()
                 let suggestion = try await generator.suggestSwap(
-                    exerciseName: exercise.name,
-                    muscleGroup: exercise.muscleGroup,
-                    exerciseSets: exercise.sets,
-                    exerciseRepRange: exercise.repRange,
-                    exerciseRestSeconds: exercise.restSeconds,
+                    exerciseName: swappingExercise!.name,
+                    muscleGroup: swappingExercise!.muscleGroup,
+                    exerciseSets: swappingExercise!.sets,
+                    exerciseRepRange: swappingExercise!.repRange,
+                    exerciseRestSeconds: swappingExercise!.restSeconds,
                     workoutName: template.name,
                     targetMuscles: template.targetMuscles,
                     profileSummary: profileSummary,
-                    equipmentAccess: equipmentAccess
+                    equipmentAccess: equipmentAccess,
+                    userNotes: swapNotes.isEmpty ? nil : swapNotes
                 )
                 swapSuggestion = suggestion
                 showSwapSheet = true
@@ -251,7 +314,7 @@ struct ExerciseRow: View {
     let exercise: ExerciseTemplate
     let index: Int
     var isSwapping: Bool = false
-    let onSwap: () -> Void
+    let initiateSwap: () -> Void
     var onImageTap: (() -> Void)?
 
     var body: some View {
@@ -320,7 +383,7 @@ struct ExerciseRow: View {
                         .padding(8)
                 } else {
                     Menu {
-                        Button("Swap Exercise", systemImage: "arrow.triangle.2.circlepath", action: onSwap)
+                        Button("Swap Exercise", systemImage: "arrow.triangle.2.circlepath", action: initiateSwap)
                     } label: {
                         Image(systemName: "ellipsis")
                             .padding(8)

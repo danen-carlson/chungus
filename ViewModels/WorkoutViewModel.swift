@@ -166,7 +166,7 @@ final class WorkoutViewModel {
 
     // MARK: - Exercise Swap
 
-    func requestSwap(profileSummary: String, equipmentAccess: String) async {
+    func requestSwap(profileSummary: String, equipmentAccess: String, userNotes: String? = nil) async {
         guard let exercise = currentExercise,
               let template = template else { return }
 
@@ -183,7 +183,8 @@ final class WorkoutViewModel {
                 workoutName: template.name,
                 targetMuscles: template.targetMuscles,
                 profileSummary: profileSummary,
-                equipmentAccess: equipmentAccess
+                equipmentAccess: equipmentAccess,
+                userNotes: userNotes
             )
             swapSuggestion = suggestion
             showSwapSuggestion = true
