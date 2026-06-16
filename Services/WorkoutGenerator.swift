@@ -177,6 +177,62 @@ struct WorkoutGenerator {
         return try decoder.decode(GeneratedWorkout.self, from: jsonData)
     }
 
+    // MARK: - Tweak Workout
+
+    func tweakWorkout(
+        workoutName: String,
+        targetMuscles: [String],
+        exercisesSummary: String,
+        tweakRequest: String,
+        profileSummary: String
+    ) async throws -> GeneratedWorkout {
+        let prompt = """
+        You are an expert personal trainer. The user wants to TWEAK an existing workout, not rebuild it from scratch.
+        
+        User profile: \(profileSummary)
+        
+        Current workout: \(workoutName)
+        Target muscles: \(targetMuscles.joined(separator: ", "))
+        
+        Current exercises:
+        \(exercisesSummary)
+        
+        User's tweak request: "\(tweakRequest)"
+        
+        Instructions:
+        - Modify the current workout to satisfy the user's request.
+        - Keep the workout cohesive and evidence-based.
+        - You may add, remove, or modify exercises, sets, reps, or rest times as needed to fulfill the request.
+        - CRITICAL: User has a history of bilateral shoulder dislocations (left shoulder recovering). NO behind-the-neck movements, deep dips, or heavy overhead barbell work. ALWAYS include scapular/rotator cuff prehab.
+        
+        Return JSON exactly matching this schema for a SINGLE workout:
+        {"name":"string","targetMuscles":["string"],"estimatedDurationMin":60,"exercises":[{"name":"string","muscleGroup":"string","sets":3,"repRange":"8-12","targetWeightLbs":null,"restSeconds":90,"tips":"string","alternatives":[]}]}
+        """
+        
+        var lastError: Error?
+        for attempt in 1...3 {
+            do {
+                print("[Chungus] Tweak workout attempt \(attempt)/3...")
+                let rawJSON = try await gateway.generateWorkoutJSON(prompt: prompt, timeout: 120.0)
+                
+                guard let jsonData = rawJSON.data(using: .utf8) else {
+                    throw NSError(domain: "WorkoutGenerator", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to encode response to UTF-8"])
+                }
+                
+                let decoder = JSONDecoder()
+                return try decoder.decode(GeneratedWorkout.self, from: jsonData)
+            } catch {
+                lastError = error
+                if attempt < 3 {
+                    let delay = Double(attempt) * 3.0
+                    print("[Chungus] Attempt \(attempt) failed, waiting \(delay)s before retry...")
+                    try? await Task.sleep(for: .seconds(delay))
+                }
+            }
+        }
+        throw lastError!
+    }
+
     // MARK: - Exercise Swap
 
     func suggestSwap(
