@@ -5,6 +5,7 @@ struct DashboardView: View {
     @Environment(\.modelContext) private var modelContext
     @State private var viewModel = DashboardViewModel()
     @State private var selectedWorkout: WorkoutTemplate?
+    @State private var showRebuildPlan = false
 
     var body: some View {
         NavigationStack {
@@ -67,11 +68,25 @@ struct DashboardView: View {
             }
             .background(Color.chungusBackground)
             .navigationTitle("Chungus")
+            .toolbar {
+                if !viewModel.upcomingWorkouts.isEmpty {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button {
+                            showRebuildPlan = true
+                        } label: {
+                            Label("Rebuild", systemImage: "arrow.triangle.2.circlepath")
+                        }
+                    }
+                }
+            }
             .onAppear {
                 viewModel.loadData(context: modelContext)
             }
             .navigationDestination(item: $selectedWorkout) { workout in
                 WorkoutDetailView(template: workout)
+            }
+            .sheet(isPresented: $showRebuildPlan) {
+                RebuildPlanView()
             }
         }
     }

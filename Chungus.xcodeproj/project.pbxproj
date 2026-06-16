@@ -23,6 +23,7 @@
 		31D9F3D1950F159EC9C93EF0 /* WatchExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1968D7EC54B1CC62981B8EBB /* WatchExtensions.swift */; };
 		321DCE341936DBCF3D54C9D0 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41877372EA683A28ED2A100A /* SettingsView.swift */; };
 		39CCE278ACBCDB0AFF78B5B7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EA799F2E8F60DD230A442EDE /* Assets.xcassets */; };
+		43B5D6544E671FE33897C071 /* RebuildPlanViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EFEE2A2D934CF191057059B /* RebuildPlanViewModel.swift */; };
 		4B65C1DE039CE273591B6406 /* ChungusApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0FCB2D7909432235210B3E2 /* ChungusApp.swift */; };
 		59440CE5C83ACB6BE2EC3585 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B6DFA19B99AAF1B3EA125FDB /* Assets.xcassets */; };
 		5C9B1F307D2C7C69DB68E4BE /* ActiveWorkoutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCDF0D3DE6F8F9B0C7555A48 /* ActiveWorkoutView.swift */; };
@@ -34,6 +35,7 @@
 		9B2DEE7D59F128124F9917A5 /* ExerciseExecutionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76DD8C61BBEB1C41BA6DC7F1 /* ExerciseExecutionView.swift */; };
 		9CD7588591C79D3D9704F77A /* HabitsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D86BA192AE177A15890FD023 /* HabitsView.swift */; };
 		9F18ECBF434F52E6EA8975E9 /* SetTrackingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16FDA360ABCB286F33974B95 /* SetTrackingView.swift */; };
+		A5B5A2650C4B2F58D178DC8A /* RebuildPlanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A14741388DB559248736B929 /* RebuildPlanView.swift */; };
 		AB04512526BE9455236FA5B0 /* HistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99A7B1433E9322ED2388E354 /* HistoryView.swift */; };
 		AF34E9BF258BAF8C1080B0AF /* SetRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A4E2290505C705D482606F9 /* SetRecord.swift */; };
 		B06FE29B1594DFC7391266E4 /* UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BAC112026848A22BAA9308 /* UserProfile.swift */; };
@@ -87,11 +89,13 @@
 		6A0C77F136B7F8007D77EE9A /* Chungus.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Chungus.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6A19B5D1D52898881D7D6AA2 /* WorkoutDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutDetailView.swift; sourceTree = "<group>"; };
 		76DD8C61BBEB1C41BA6DC7F1 /* ExerciseExecutionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseExecutionView.swift; sourceTree = "<group>"; };
+		7EFEE2A2D934CF191057059B /* RebuildPlanViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RebuildPlanViewModel.swift; sourceTree = "<group>"; };
 		86FD0405BAA931AF8C8873ED /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
 		89CBD813C2051071C9A36211 /* WatchWorkoutViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchWorkoutViewModel.swift; sourceTree = "<group>"; };
 		99A7B1433E9322ED2388E354 /* HistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryView.swift; sourceTree = "<group>"; };
 		9A3B3C42D694192373F5E0E9 /* WorkoutSummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutSummaryView.swift; sourceTree = "<group>"; };
 		9C639A1FDCFBDEAF7E655690 /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
+		A14741388DB559248736B929 /* RebuildPlanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RebuildPlanView.swift; sourceTree = "<group>"; };
 		A8519F8E53C9B282AD007C5E /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		B19D1C8A7238FCFA8EE54504 /* ExerciseSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseSession.swift; sourceTree = "<group>"; };
 		B6DFA19B99AAF1B3EA125FDB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -157,6 +161,7 @@
 			children = (
 				F651386F09CE42652BD48BBB /* DashboardViewModel.swift */,
 				E02BA1296340F311AF0A170C /* OnboardingViewModel.swift */,
+				7EFEE2A2D934CF191057059B /* RebuildPlanViewModel.swift */,
 				86FD0405BAA931AF8C8873ED /* SettingsViewModel.swift */,
 				4198F855DC3F9809A973407B /* WorkoutViewModel.swift */,
 			);
@@ -178,6 +183,7 @@
 				0BD6A58646A8CB9D210096DC /* Habits */,
 				11BE31FFA971AABDA65F3D3C /* History */,
 				92626DE3ADF4DE80B7FF6FC1 /* Onboarding */,
+				817A35C59DF7F2B52246DDAD /* Rebuild */,
 				4A77CF48DE1135D1D92AB59A /* Settings */,
 				2C2CB3D8E3A929BFFF18E43C /* Workout */,
 			);
@@ -194,6 +200,14 @@
 				0EA789C2A3F6C8525D2DA4DD /* WorkoutGenerator.swift */,
 			);
 			path = Services;
+			sourceTree = "<group>";
+		};
+		817A35C59DF7F2B52246DDAD /* Rebuild */ = {
+			isa = PBXGroup;
+			children = (
+				A14741388DB559248736B929 /* RebuildPlanView.swift */,
+			);
+			path = Rebuild;
 			sourceTree = "<group>";
 		};
 		85C804A0A1362A130E21ACA7 /* ViewModels */ = {
@@ -413,6 +427,8 @@
 				FC934C698574AD246FC18586 /* KeychainService.swift in Sources */,
 				894308EEEADDDE242B896DCD /* OnboardingView.swift in Sources */,
 				0A1D24597999BEB1D7D4FE0D /* OnboardingViewModel.swift in Sources */,
+				A5B5A2650C4B2F58D178DC8A /* RebuildPlanView.swift in Sources */,
+				43B5D6544E671FE33897C071 /* RebuildPlanViewModel.swift in Sources */,
 				AF34E9BF258BAF8C1080B0AF /* SetRecord.swift in Sources */,
 				9F18ECBF434F52E6EA8975E9 /* SetTrackingView.swift in Sources */,
 				321DCE341936DBCF3D54C9D0 /* SettingsView.swift in Sources */,

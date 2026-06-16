@@ -92,6 +92,54 @@ struct WorkoutGenerator {
         throw lastError!
     }
 
+    // MARK: - Regenerate Plan (with history)
+
+    func regeneratePlan(profileSummary: String, historySummary: String) async throws -> GeneratedPlan {
+        let prompt = """
+        Create a NEW workout plan from scratch. The user is rebuilding their plan and wants to go through intake again.
+
+        User profile: \(profileSummary)
+
+        Recent workout history (use these weights as a baseline for progression):
+        \(historySummary)
+
+        Rules:
+        - Choose the best split for their days/goal
+        - 5-6 exercises per workout max
+        - Rep ranges like "8-12"
+        - Weights: Use the historical weights provided above as a baseline. If no history for an exercise, estimate based on experience level, or use null for beginners.
+        - Rest: 60-90s hypertrophy, 120-180s strength
+        - Short tip per exercise
+        - CRITICAL: User has a history of bilateral shoulder dislocations (left shoulder recovering). NO behind-the-neck movements, deep dips, or heavy overhead barbell work. ALWAYS include scapular/rotator cuff prehab.
+
+        Return JSON exactly matching this schema:
+        {"splitType":"string","workouts":[{"name":"string","targetMuscles":["string"],"estimatedDurationMin":60,"exercises":[{"name":"string","muscleGroup":"string","sets":3,"repRange":"8-12","targetWeightLbs":null,"restSeconds":90,"tips":"string","alternatives":[]}]}]}
+        """
+
+        var lastError: Error?
+        for attempt in 1...3 {
+            do {
+                print("[Chungus] Plan regeneration attempt \(attempt)/3 via Gateway...")
+                let rawJSON = try await gateway.generateWorkoutJSON(prompt: prompt, timeout: 120.0)
+                
+                guard let jsonData = rawJSON.data(using: .utf8) else {
+                    throw NSError(domain: "WorkoutGenerator", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to encode response to UTF-8"])
+                }
+                
+                let decoder = JSONDecoder()
+                return try decoder.decode(GeneratedPlan.self, from: jsonData)
+            } catch {
+                lastError = error
+                if attempt < 3 {
+                    let delay = Double(attempt) * 3.0
+                    print("[Chungus] Attempt \(attempt) failed, waiting \(delay)s before retry...")
+                    try? await Task.sleep(for: .seconds(delay))
+                }
+            }
+        }
+        throw lastError!
+    }
+
     // MARK: - Regenerate Next Workout
 
     func regenerateWorkout(

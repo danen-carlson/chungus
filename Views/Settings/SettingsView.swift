@@ -5,6 +5,7 @@ struct SettingsView: View {
     @Environment(\.modelContext) private var modelContext
     @State private var viewModel = SettingsViewModel()
     @State private var gatewayTestState: GatewayTestState = .idle
+    @State private var showRebuildPlan = false
 
     enum GatewayTestState: Equatable {
         case idle
@@ -50,6 +51,23 @@ struct SettingsView: View {
                 Section("Notes") {
                     TextEditor(text: $viewModel.editAdditionalNotes)
                         .frame(minHeight: 60)
+                }
+
+                // Workout Plan
+                Section("Workout Plan") {
+                    Button {
+                        showRebuildPlan = true
+                    } label: {
+                        HStack {
+                            Image(systemName: "arrow.triangle.2.circlepath")
+                                .foregroundStyle(.orange)
+                            Text("Rebuild Workout Plan")
+                                .foregroundStyle(.orange)
+                        }
+                    }
+                    Text("Start fresh with a new AI-generated plan based on your updated profile and recent workout history.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
                 }
 
                 // Server Connection
@@ -128,6 +146,9 @@ struct SettingsView: View {
                 Button("OK") { viewModel.saveMessage = nil }
             } message: {
                 Text(viewModel.saveMessage ?? "")
+            }
+            .sheet(isPresented: $showRebuildPlan) {
+                RebuildPlanView()
             }
         }
     }
